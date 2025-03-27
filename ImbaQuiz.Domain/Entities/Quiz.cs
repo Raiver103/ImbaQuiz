@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ImbaQuiz.Domain.Entities
 {
-    internal class Quiz
+    public class Quiz
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public User User { get; set; }
         public ICollection<Question> Questions { get; set; } = new List<Question>();
     }
