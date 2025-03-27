@@ -1,10 +1,10 @@
 // src/components/Profile.js
 import React, { useEffect, useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth0 } from '@auth0/auth0-react'; 
 import axios from 'axios';
 
 const Profile = () => {
-  const { user, isAuthenticated, getAccessTokenSilently, logout } = useAuth0();
+  const { user, isAuthenticated, getAccessTokenSilently, logout, loginWithRedirect } = useAuth0();
   const [quizzes, setQuizzes] = useState([]);
 
   useEffect(() => {

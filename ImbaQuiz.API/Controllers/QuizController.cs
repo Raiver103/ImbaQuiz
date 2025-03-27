@@ -34,6 +34,8 @@ namespace ImbaQuiz.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateQuiz([FromBody] QuizDTO quizDto)
         {
+              // Связываем квиз с текущим пользователем
+            Console.WriteLine(quizDto.UserId);
             var createdQuiz = await _quizService.CreateAsync(quizDto);
             return CreatedAtAction(nameof(GetQuiz), new { id = createdQuiz.Id }, createdQuiz);
         }

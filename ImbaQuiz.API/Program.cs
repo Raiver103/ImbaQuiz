@@ -10,7 +10,16 @@ using Microsoft.OpenApi.Models;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", policy =>
+    {
+        // –азрешаем запросы с любого источника (можно ограничить только нужным доменом)
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 builder.Services.AddControllers();
 
 // –егистраци€ AutoMapper
@@ -37,6 +46,7 @@ builder.Services.AddScoped<IAnswerService, AnswerService>();
 
 var app = builder.Build();
 
+app.UseCors("AllowAllOrigins");
 app.MapControllers();
 
 app.UseSwagger();

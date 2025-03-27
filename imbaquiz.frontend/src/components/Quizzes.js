@@ -1,35 +1,38 @@
-// src/components/Quizzes.js
 import React, { useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 
 const Quizzes = () => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, user } = useAuth0();
   const [quizTitle, setQuizTitle] = useState('');
-  const [quizDescription, setQuizDescription] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const token = await getAccessTokenSilently();
+    const token = await getAccessTokenSilently(); // Получаем токен
+    console.log(token);
     const newQuiz = {
       title: quizTitle,
-      description: quizDescription,
+      userId: user?.sub,
+      
     };
-
+    console.log(user?.sub);
     try {
-      await axios.post('https://localhost:7280/api/quizzes', newQuiz, {
+      // Отправляем запрос с токеном
+      const res = await axios.post('https://localhost:7280/api/quizzes', newQuiz, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // Токен в заголовке
         },
       });
       setQuizTitle('');
-      setQuizDescription('');
       alert('Quiz created successfully');
     } catch (error) {
-      console.error(error);
-      alert('Failed to create quiz');
+      // Выводим подробности ошибки
+      console.error("Error details:", error);
+      alert(`Failed to create quiz: ${error.response ? JSON.stringify(error.response.data) : error.message}`);
+      alert(`Failed to create quiz: ${token}`);
     }
+    
   };
 
   return (
@@ -42,14 +45,6 @@ const Quizzes = () => {
             type="text"
             value={quizTitle}
             onChange={(e) => setQuizTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Description:</label>
-          <textarea
-            value={quizDescription}
-            onChange={(e) => setQuizDescription(e.target.value)}
             required
           />
         </div>
