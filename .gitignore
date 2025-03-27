@@ -1,0 +1,55 @@
+# Visual Studio specific
+.vscode/
+
+# Build output
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+logs/
+*.log
+
+# ASP.NET Core
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Production.json
+appsettings.Staging.json
+appsettings.json
+
+# Dependencies
+packages/
+node_modules/
+
+# Entity Framework migrations
+Migrations/
+  
+# Database files
+*.mdf
+*.ldf
+
+# Publish outputs
+wwwroot/
+*.pubxml
+*.publishsettings
+
+# Docker
+docker-compose.override.yml
+
+# Resharper
+*.DotSettings.user
+
+# Azure
+.vs/
+
+# Coverage & Testing
+coverage/
+TestResults/
+
+# Secrets
+secrets.json
