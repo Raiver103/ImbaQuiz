@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import Questions from "./Questions"; // Подключаем компонент для вопросов
+import Questions from "./Questions";
 
 const Quizzes = () => {
   const { getAccessTokenSilently, user } = useAuth0();
   const [quizzes, setQuizzes] = useState([]);
   const [selectedQuizId, setSelectedQuizId] = useState(null);
   const [quizTitle, setQuizTitle] = useState("");
+  const [editQuizId, setEditQuizId] = useState(null);
   const [editQuizTitle, setEditQuizTitle] = useState("");
 
   useEffect(() => {
@@ -49,11 +50,12 @@ const Quizzes = () => {
     const token = await getAccessTokenSilently();
     try {
       await axios.put(
-        `https://localhost:7280/api/quizzes/${selectedQuizId}`,
-        { id: selectedQuizId, title: editQuizTitle, userId: user.sub },
+        `https://localhost:7280/api/quizzes/${editQuizId}`,
+        { id: editQuizId, title: editQuizTitle, userId: user.sub },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setQuizzes(quizzes.map(q => q.id === selectedQuizId ? { ...q, title: editQuizTitle } : q));
+      setQuizzes(quizzes.map(q => q.id === editQuizId ? { ...q, title: editQuizTitle } : q));
+      setEditQuizId(null);
       setEditQuizTitle("");
     } catch (error) {
       console.error("Error updating quiz:", error);
@@ -81,13 +83,29 @@ const Quizzes = () => {
       <ul>
         {quizzes.map((quiz) => (
           <li key={quiz.id}>
-            {quiz.title}
-            <button onClick={() => setSelectedQuizId(quiz.id)}>View</button>
-            <button onClick={() => { setEditQuizTitle(quiz.title); setSelectedQuizId(quiz.id); }}>Edit</button>
-            <button onClick={() => handleDeleteQuiz(quiz.id)}>Delete</button>
-            <Link to={`/quiz-game/${quiz.id}`}>
-              <button style={{ marginLeft: "10px" }}>Играть</button>
-            </Link>
+            {editQuizId === quiz.id ? (
+              <>
+                <input
+                  type="text"
+                  value={editQuizTitle}
+                  onChange={(e) => setEditQuizTitle(e.target.value)}
+                  placeholder="Enter new quiz title"
+                  required
+                />
+                <button onClick={handleUpdateQuiz}>Save</button>
+                <button onClick={() => setEditQuizId(null)}>Cancel</button>
+              </>
+            ) : (
+              <>
+                {quiz.title}
+                <button onClick={() => setSelectedQuizId(quiz.id)}>View</button>
+                <button onClick={() => { setEditQuizId(quiz.id); setEditQuizTitle(quiz.title); }}>Edit</button>
+                <button onClick={() => handleDeleteQuiz(quiz.id)}>Delete</button>
+                <Link to={`/quiz-game/${quiz.id}`}>
+                  <button style={{ marginLeft: "10px" }}>Играть</button>
+                </Link>
+              </>
+            )}
           </li>
         ))}
       </ul>
@@ -102,20 +120,6 @@ const Quizzes = () => {
         />
         <button type="submit">Add Quiz</button>
       </form>
-
-      {selectedQuizId && (
-        <div>
-          <h4>Edit Quiz</h4>
-          <input
-            type="text"
-            value={editQuizTitle}
-            onChange={(e) => setEditQuizTitle(e.target.value)}
-            placeholder="Enter new quiz title"
-            required
-          />
-          <button onClick={handleUpdateQuiz}>Update Quiz</button>
-        </div>
-      )}
 
       {selectedQuizId && <Questions quizId={selectedQuizId} />}
     </div>

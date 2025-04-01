@@ -8,6 +8,9 @@ const Answers = ({ questionId }) => {
   const [answers, setAnswers] = useState([]);
   const [newAnswerText, setNewAnswerText] = useState("");
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
+  const [editingAnswer, setEditingAnswer] = useState(null);
+  const [editedText, setEditedText] = useState("");
+  const [editedCorrect, setEditedCorrect] = useState(false);
 
   useEffect(() => {
     const fetchAnswers = async () => {
@@ -37,7 +40,8 @@ const Answers = ({ questionId }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setAnswers([...answers, res.data]);
-      setNewAnswerText(""); // Очистим поле ввода
+      setNewAnswerText("");
+      setIsCorrectAnswer(false);
     } catch (error) {
       console.error("Error adding answer:", error);
     }
@@ -55,14 +59,69 @@ const Answers = ({ questionId }) => {
     }
   };
 
+  const handleEditAnswer = (answer) => {
+    setEditingAnswer(answer.id);
+    setEditedText(answer.text);
+    setEditedCorrect(answer.isCorrect);
+  };
+
+  const handleUpdateAnswer = async (e) => {
+    e.preventDefault();
+    if (!editingAnswer) return;
+
+    const token = await getAccessTokenSilently();
+    try {
+      await axios.put(
+        `https://localhost:7280/api/answers/${editingAnswer}`,
+        { text: editedText, isCorrect: editedCorrect, questionId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setAnswers(
+        answers.map((answer) =>
+          answer.id === editingAnswer ? { ...answer, text: editedText, isCorrect: editedCorrect } : answer
+        )
+      );
+      setEditingAnswer(null);
+      setEditedText("");
+      setEditedCorrect(false);
+    } catch (error) {
+      console.error("Error updating answer:", error);
+    }
+  };
+
   return (
     <div>
       <h3>Answers for Question {questionId}</h3>
       <ul>
         {answers.map((answer) => (
           <li key={answer.id}>
-            {answer.text} {answer.isCorrect ? "(Correct)" : "(Incorrect)"}
-            <button onClick={() => handleDeleteAnswer(answer.id)}>Delete</button>
+            {editingAnswer === answer.id ? (
+              <form onSubmit={handleUpdateAnswer}>
+                <input
+                  type="text"
+                  value={editedText}
+                  onChange={(e) => setEditedText(e.target.value)}
+                  required
+                />
+                <label>
+                  Correct Answer
+                  <input
+                    type="checkbox"
+                    checked={editedCorrect}
+                    onChange={() => setEditedCorrect(!editedCorrect)}
+                  />
+                </label>
+                <button type="submit">Save</button>
+                <button type="button" onClick={() => setEditingAnswer(null)}>Cancel</button>
+              </form>
+            ) : (
+              <>
+                {answer.text} {answer.isCorrect ? "(Correct)" : "(Incorrect)"}
+                <button onClick={() => handleEditAnswer(answer)}>Edit</button>
+                <button onClick={() => handleDeleteAnswer(answer.id)}>Delete</button>
+              </>
+            )}
           </li>
         ))}
       </ul>

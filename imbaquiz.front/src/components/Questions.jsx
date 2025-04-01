@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
-import Answers from "./Answers"; // Подключаем компонент для ответов
+import Answers from "./Answers";
 
 const Questions = ({ quizId }) => {
   const { getAccessTokenSilently } = useAuth0();
   const [questions, setQuestions] = useState([]);
   const [newQuestionText, setNewQuestionText] = useState("");
-  const [selectedQuestionId, setSelectedQuestionId] = useState(null); // Состояние для отображения ответов
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+  const [editingQuestionId, setEditingQuestionId] = useState(null);
+  const [editedText, setEditedText] = useState("");
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -37,7 +39,7 @@ const Questions = ({ quizId }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setQuestions([...questions, res.data]);
-      setNewQuestionText(""); // Очистим поле ввода
+      setNewQuestionText("");
     } catch (error) {
       console.error("Error adding question:", error);
     }
@@ -55,24 +57,57 @@ const Questions = ({ quizId }) => {
     }
   };
 
+  const handleEditQuestion = (question) => {
+    setEditingQuestionId(question.id);
+    setEditedText(question.text);
+  };
+
+  const handleSaveEdit = async (questionId) => {
+    if (!editedText) return;
+    const token = await getAccessTokenSilently();
+    try {
+      await axios.put(
+        `https://localhost:7280/api/questions/${questionId}`,
+        { text: editedText, quizId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setQuestions(
+        questions.map((q) => (q.id === questionId ? { ...q, text: editedText } : q))
+      );
+      setEditingQuestionId(null);
+    } catch (error) {
+      console.error("Error updating question:", error);
+    }
+  };
+
   return (
     <div>
       <h3>Questions for Quiz {quizId}</h3>
       <ul>
         {questions.map((question) => (
           <li key={question.id}>
-            {question.text}
+            {editingQuestionId === question.id ? (
+              <input
+                type="text"
+                value={editedText}
+                onChange={(e) => setEditedText(e.target.value)}
+              />
+            ) : (
+              question.text
+            )}
             <button onClick={() => setSelectedQuestionId(question.id)}>
               {selectedQuestionId === question.id ? "Hide Answers" : "View Answers"}
             </button>
+            {editingQuestionId === question.id ? (
+              <button onClick={() => handleSaveEdit(question.id)}>Save</button>
+            ) : (
+              <button onClick={() => handleEditQuestion(question)}>Edit</button>
+            )}
             <button onClick={() => handleDeleteQuestion(question.id)}>Delete</button>
-            
-            {/* Отображаем компонент Answers только если вопрос выбран */}
             {selectedQuestionId === question.id && <Answers questionId={question.id} />}
           </li>
         ))}
       </ul>
-
       <form onSubmit={handleAddQuestion}>
         <input
           type="text"
