@@ -62,7 +62,8 @@ namespace ImbaQuiz.API.Controllers
                 return NotFound($"No answers found for question with ID {questionId}");
             }
             return Ok(answers);
-        }
+        }  
+
     }
 
 }
