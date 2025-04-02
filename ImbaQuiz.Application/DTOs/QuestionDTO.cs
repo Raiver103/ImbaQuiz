@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImbaQuiz.Domain.Entities
+namespace ImbaQuiz.Application.DTOs
 {
-    public class Question : BaseEntity
-    { 
+    public class QuestionDTO
+    {
+        public int Id { get; set; }
         public string Text { get; set; }
         public int QuizId { get; set; }
-        public Quiz Quiz { get; set; }
-        public ICollection<Answer> Answers { get; set; } = new List<Answer>();
     }
 }

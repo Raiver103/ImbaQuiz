@@ -7,13 +7,8 @@ using System.Threading.Tasks;
 
 namespace ImbaQuiz.Domain.Interfaces
 { 
-    public interface IQuestionRepository
+    public interface IQuestionRepository : IRepository<Question, int>
     {
-        Task<IEnumerable<Question>> GetAllAsync();
-        Task<Question> GetByIdAsync(int id);
-        Task<Question> CreateAsync(Question question);
-        Task<Question> UpdateAsync(Question question);
-        Task DeleteAsync(int id);
         Task<List<Question>> GetQuestionsByQuizIdAsync(int quizId);
     }
 
