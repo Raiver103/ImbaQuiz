@@ -11,7 +11,16 @@ namespace ImbaQuiz.infrastructure.Persistence
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { 
+            try
+            {
+                Database.Migrate(); 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка миграции: {ex.Message}");
+            }
+        }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
