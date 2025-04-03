@@ -3,62 +3,51 @@ using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ImbaQuiz.Application.Services
 {
-    public class QuestionService : IQuestionService
-    {
-        private readonly IQuestionRepository _questionRepository;
-        private readonly IMapper _mapper;
+    public class QuestionService(IQuestionRepository _questionRepository, IMapper _mapper) : IQuestionService
+    { 
 
-        public QuestionService(IQuestionRepository questionRepository, IMapper mapper)
+        public async Task<IEnumerable<QuestionDTO>> GetAllAsync(CancellationToken cancellationToken)
         {
-            _questionRepository = questionRepository;
-            _mapper = mapper;
-        }
-
-        public async Task<IEnumerable<QuestionDTO>> GetAllAsync()
-        {
-            var questions = await _questionRepository.GetAllAsync();
+            var questions = await _questionRepository.GetAllAsync(cancellationToken);
             return _mapper.Map<IEnumerable<QuestionDTO>>(questions);
         }
 
-        public async Task<QuestionDTO> GetByIdAsync(int id)
+        public async Task<QuestionDTO> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var question = await _questionRepository.GetByIdAsync(id);
+            var question = await _questionRepository.GetByIdAsync(id, cancellationToken);
             return _mapper.Map<QuestionDTO>(question);
         }
 
-        public async Task<QuestionDTO> CreateAsync(QuestionDTO questionDto)
+        public async Task<QuestionDTO> CreateAsync(QuestionDTO questionDto, CancellationToken cancellationToken)
         {
             var question = _mapper.Map<Question>(questionDto);
-            var createdQuestion = await _questionRepository.CreateAsync(question);
+            var createdQuestion = await _questionRepository.CreateAsync(question, cancellationToken);
             return _mapper.Map<QuestionDTO>(createdQuestion);
         }
 
-        public async Task<QuestionDTO> UpdateAsync(int id, QuestionDTO questionDto)
+        public async Task<QuestionDTO> UpdateAsync(int id, QuestionDTO questionDto, CancellationToken cancellationToken)
         {
             var question = _mapper.Map<Question>(questionDto);
-            question.Id = id; // Устанавливаем ID для обновления
-            var updatedQuestion = await _questionRepository.UpdateAsync(question);
+            question.Id = id; 
+            var updatedQuestion = await _questionRepository.UpdateAsync(question, cancellationToken);
             return _mapper.Map<QuestionDTO>(updatedQuestion);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            await _questionRepository.DeleteAsync(id);
+            await _questionRepository.DeleteAsync(id, cancellationToken);
         }
 
-        public async Task<List<QuestionDTO>> GetByQuizIdAsync(int quizId)
+        public async Task<List<QuestionDTO>> GetByQuizIdAsync(int quizId, CancellationToken cancellationToken)
         {
-            var questions = await _questionRepository.GetQuestionsByQuizIdAsync(quizId);
-            return _mapper.Map<List<QuestionDTO>>(questions);  // Используем AutoMapper для маппинга в DTO
+            var questions = await _questionRepository.GetQuestionsByQuizIdAsync(quizId, cancellationToken);
+            return _mapper.Map<List<QuestionDTO>>(questions);
         }
-
     }
 }

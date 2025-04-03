@@ -1,67 +1,66 @@
 ﻿using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Domain.Entities;
+using ImbaQuiz.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ImbaQuiz.API.Controllers
 { 
     [ApiController]
-    [Route("api/[controller]")]
-    public class QuestionsController : ControllerBase
-    {
-        private readonly IQuestionService _questionService;
-
-        public QuestionsController(IQuestionService questionService)
-        {
-            _questionService = questionService;
-        }
+    [Route("api/questions")]
+    public class QuestionsController(IQuestionService _questionService) : ControllerBase
+    { 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllQuestions()
+        public async Task<OkObjectResult> GetAllQuestions(CancellationToken cancellationToken)
         {
-            var questions = await _questionService.GetAllAsync();
+            var questions = await _questionService.GetAllAsync(cancellationToken);
             return Ok(questions);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetQuestion(int id)
+        public async Task<OkObjectResult> GetQuestion(int id, CancellationToken cancellationToken)
         {
-            var question = await _questionService.GetByIdAsync(id);
-            if (question == null) return NotFound();
+            var question = await _questionService.GetByIdAsync(id, cancellationToken);
+            if (question is null) 
+            {
+                throw new NotFoundException($"Question with id {id} not found.");
+            }
             return Ok(question);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuestion([FromBody] QuestionDTO questionDto)
+        public async Task<CreatedAtActionResult> CreateQuestion([FromBody] QuestionDTO questionDto, CancellationToken cancellationToken)
         {
-            var createdQuestion = await _questionService.CreateAsync(questionDto);
+            var createdQuestion = await _questionService.CreateAsync(questionDto, cancellationToken);
             return CreatedAtAction(nameof(GetQuestion), new { id = createdQuestion.Id }, createdQuestion);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateQuestion(int id, [FromBody] QuestionDTO questionDto)
+        public async Task<NoContentResult> UpdateQuestion(int id, [FromBody] QuestionDTO questionDto, CancellationToken cancellationToken)
         {
-            await _questionService.UpdateAsync(id, questionDto);
+            await _questionService.UpdateAsync(id, questionDto, cancellationToken);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteQuestion(int id)
+        public async Task<NoContentResult> DeleteQuestion(int id, CancellationToken cancellationToken)
         {
-            await _questionService.DeleteAsync(id);
+            await _questionService.DeleteAsync(id, cancellationToken);
             return NoContent();
         }
 
-        [HttpGet("byQuiz/{quizId}")]
-        public async Task<IActionResult> GetQuestionsByQuizId(int quizId)
+        [HttpGet("by-quiz/{quizId}")]
+        public async Task<OkObjectResult> GetQuestionsByQuizId(int quizId, CancellationToken cancellationToken)
         {
-            var questions = await _questionService.GetByQuizIdAsync(quizId);
-            if (questions == null || !questions.Any())
+            var questions = await _questionService.GetByQuizIdAsync(quizId, cancellationToken);
+            if (questions is null || !questions.Any()) 
             {
-                return NotFound($"No questions found for quiz with ID {quizId}");
+                throw new NotFoundException("Questions are not found.");
             }
             return Ok(questions);
         }
-
     }
 }

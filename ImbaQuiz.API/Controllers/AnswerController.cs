@@ -1,69 +1,62 @@
 ﻿using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Domain.Entities;
+using ImbaQuiz.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImbaQuiz.API.Controllers
 { 
     [ApiController]
-    [Route("api/[controller]")]
-    public class AnswersController : ControllerBase
-    {
-        private readonly IAnswerService _answerService;
-
-        public AnswersController(IAnswerService answerService)
-        {
-            _answerService = answerService;
-        }
-
+    [Route("api/answers")]
+    public class AnswersController(IAnswerService _answerService) : ControllerBase
+    { 
         [HttpGet]
-        public async Task<IActionResult> GetAllAnswers()
+        public async Task<OkObjectResult> GetAllAnswers(CancellationToken cancellationToken)
         {
-            var answers = await _answerService.GetAllAsync();
+            var answers = await _answerService.GetAllAsync(cancellationToken);
             return Ok(answers);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAnswer(int id)
+        public async Task<OkObjectResult> GetAnswer(int id, CancellationToken cancellationToken)
         {
-            var answer = await _answerService.GetByIdAsync(id);
-            if (answer == null) return NotFound();
+            var answer = await _answerService.GetByIdAsync(id, cancellationToken);
+            if (answer is null) {
+                throw new NotFoundException($"Answer with id {id} not found.");
+            }
             return Ok(answer);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAnswer([FromBody] AnswerDTO answerDto)
+        public async Task<CreatedAtActionResult> CreateAnswer([FromBody] AnswerDTO answerDto, CancellationToken cancellationToken)
         {
-            var createdAnswer = await _answerService.CreateAsync(answerDto);
+            var createdAnswer = await _answerService.CreateAsync(answerDto, cancellationToken);
             return CreatedAtAction(nameof(GetAnswer), new { id = createdAnswer.Id }, createdAnswer);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAnswer(int id, [FromBody] AnswerDTO answerDto)
+        public async Task<NoContentResult> UpdateAnswer(int id, [FromBody] AnswerDTO answerDto, CancellationToken cancellationToken)
         {
-            await _answerService.UpdateAsync(id, answerDto);
+            await _answerService.UpdateAsync(id, answerDto, cancellationToken);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAnswer(int id)
+        public async Task<NoContentResult> DeleteAnswer(int id, CancellationToken cancellationToken)
         {
-            await _answerService.DeleteAsync(id);
+            await _answerService.DeleteAsync(id, cancellationToken);
             return NoContent();
         }
 
-        // Новый метод для получения всех ответов по вопросу
-        [HttpGet("byQuestion/{questionId}")]
-        public async Task<IActionResult> GetAnswersByQuestionId(int questionId)
+        [HttpGet("by-question/{questionId}")]
+        public async Task<OkObjectResult> GetAnswersByQuestionId(int questionId, CancellationToken cancellationToken)
         {
-            var answers = await _answerService.GetByQuestionIdAsync(questionId); // Получаем ответы для конкретного вопроса
-            if (answers == null || !answers.Any())
-            {
-                return NotFound($"No answers found for question with ID {questionId}");
+            var answers = await _answerService.GetByQuestionIdAsync(questionId, cancellationToken);
+            if (answers is null) {
+                throw new NotFoundException($"Answers are not found.");
             }
             return Ok(answers);
-        }  
-
+        }
     }
 
 }

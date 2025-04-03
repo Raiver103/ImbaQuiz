@@ -1,83 +1,53 @@
 ﻿using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
-using System;
+using ImbaQuiz.Domain.Exceptions;
+using Microsoft.AspNetCore.Mvc; 
 
 namespace ImbaQuiz.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class UsersController : ControllerBase
-    {
-        private readonly IUserService _userService;
-
-        public UsersController(IUserService userService)
-        {
-            _userService = userService;
-        }
+    [Route("api/users")]
+    public class UsersController(IUserService _userService) : ControllerBase
+    { 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<OkObjectResult> GetAllUsers(CancellationToken cancellationToken)
         {
-            var users = await _userService.GetAllAsync();
+            var users = await _userService.GetAllAsync(cancellationToken);
             return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(string id)
+        public async Task<OkObjectResult> GetUser(string id, CancellationToken cancellationToken)
         {
-            var user = await _userService.GetByIdAsync(id);
-            if (user == null) return NotFound();
+            var user = await _userService.GetByIdAsync(id, cancellationToken);
+            if (user is null)
+            {
+                throw new NotFoundException($"User with id {id} not found.");
+            }
             return Ok(user);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserDTO userDto)
+        public async Task<CreatedAtActionResult> CreateUser([FromBody] UserDTO userDto, CancellationToken cancellationToken)
         {
-            try
-            {
-                if (userDto == null)
-                {
-                    return BadRequest("User data is null.");
-                }
-
-                // Логирование принятых данных
-                Console.WriteLine($"Received user: {userDto.Id}, {userDto.Email}, {userDto.Name}");
-
-                
-
-                // Создание нового пользователя
-                var createdUser = await _userService.CreateAsync(userDto);
-
-                // Если CreateAsync возвращает null, возвращаем ошибку
-                if (createdUser == null)
-                {
-                    return StatusCode(500, "User could not be created.");
-                }
-
-                return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
-            }
-            catch (Exception ex)
-            {
-                // Логирование ошибки
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "Internal Server Error: " + ex.Message);
-            }
+            var createdUser = await _userService.CreateAsync(userDto, cancellationToken);
+            return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(string id, [FromBody] UserDTO userDto)
+        public async Task<NoContentResult> UpdateUser(string id, [FromBody] UserDTO userDto, CancellationToken cancellationToken)
         {
-            await _userService.UpdateAsync(id, userDto);
+            await _userService.UpdateAsync(id, userDto, cancellationToken);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<NoContentResult> DeleteUser(string id, CancellationToken cancellationToken)
         {
-            await _userService.DeleteAsync(id);
+            await _userService.DeleteAsync(id, cancellationToken);
             return NoContent();
         }
-    } 
+    }
 }

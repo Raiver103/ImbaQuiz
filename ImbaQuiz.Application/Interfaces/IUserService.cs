@@ -10,10 +10,10 @@ namespace ImbaQuiz.Application.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserDTO>> GetAllAsync();
-        Task<UserDTO> GetByIdAsync(string id);
-        Task<UserDTO> CreateAsync(UserDTO userDto);
-        Task<UserDTO> UpdateAsync(string id, UserDTO userDto);
-        Task DeleteAsync(string id);
+        Task<IEnumerable<UserDTO>> GetAllAsync(CancellationToken cancellationToken);
+        Task<UserDTO> GetByIdAsync(string id, CancellationToken cancellationToken);
+        Task<UserDTO> CreateAsync(UserDTO userDto, CancellationToken cancellationToken);
+        Task<UserDTO> UpdateAsync(string id, UserDTO userDto, CancellationToken cancellationToken);
+        Task DeleteAsync(string id, CancellationToken cancellationToken);
     }
 }

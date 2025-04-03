@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ImbaQuiz.Domain.Entities
 {
-    public class Quiz
-    {
-        public int Id { get; set; }
+    public class Quiz : BaseEntity
+    { 
         public string Title { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
