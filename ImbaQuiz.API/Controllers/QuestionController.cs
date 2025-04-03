@@ -48,7 +48,7 @@ namespace ImbaQuiz.API.Controllers
             return NoContent();
         }
 
-        [HttpGet("byQuiz/{quizId}")]
+        [HttpGet("by-quiz/{quizId}")]
         public async Task<OkObjectResult> GetQuestionsByQuizId(int quizId)
         {
             var questions = await _questionService.GetByQuizIdAsync(quizId);

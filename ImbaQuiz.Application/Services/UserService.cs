@@ -11,17 +11,8 @@ using System.Threading.Tasks;
 
 namespace ImbaQuiz.Application.Services
 {
-    public class UserService : IUserService
-    {
-        private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
-
-        public UserService(IUserRepository userRepository, IMapper mapper)
-        {
-            _userRepository = userRepository;
-            _mapper = mapper;
-        }
-
+    public class UserService(IUserRepository _userRepository, IMapper _mapper) : IUserService
+    { 
         public async Task<IEnumerable<UserDTO>> GetAllAsync()
         {
             var users = await _userRepository.GetAllAsync();
@@ -44,7 +35,7 @@ namespace ImbaQuiz.Application.Services
         public async Task<UserDTO> UpdateAsync(string id, UserDTO userDto)
         {
             var user = _mapper.Map<User>(userDto);
-            user.Id = id; // Устанавливаем ID для обновления
+            user.Id = id; 
             var updatedUser = await _userRepository.UpdateAsync(user);
             return _mapper.Map<UserDTO>(updatedUser);
         }

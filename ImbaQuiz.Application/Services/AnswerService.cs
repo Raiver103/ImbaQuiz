@@ -11,17 +11,8 @@ using System.Threading.Tasks;
 
 namespace ImbaQuiz.Application.Services
 {
-    public class AnswerService : IAnswerService
-    {
-        private readonly IAnswerRepository _answerRepository;
-        private readonly IMapper _mapper;
-
-        public AnswerService(IAnswerRepository answerRepository, IMapper mapper)
-        {
-            _answerRepository = answerRepository;
-            _mapper = mapper;
-        }
-
+    public class AnswerService(IAnswerRepository _answerRepository, IMapper _mapper) : IAnswerService
+    {  
         public async Task<IEnumerable<AnswerDTO>> GetAllAsync()
         {
             var answers = await _answerRepository.GetAllAsync();

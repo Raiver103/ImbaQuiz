@@ -54,6 +54,5 @@ namespace ImbaQuiz.infrastructure.Repositories
                                  .Where(a => a.QuestionId == questionId)
                                  .ToListAsync();
         }
-    }
-
+    } 
 }
