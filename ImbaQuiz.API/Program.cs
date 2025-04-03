@@ -39,7 +39,7 @@ builder.Services.AddApplicationServices();
 
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add(new ExceptionFilter()); // Добавьте фильтр для обработки ошибок
+    options.Filters.Add(new ExceptionFilter());
 });
 
 var app = builder.Build();
