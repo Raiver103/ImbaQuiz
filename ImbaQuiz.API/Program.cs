@@ -1,26 +1,20 @@
-//using ImbaQuiz.Application.Interfaces;
-using ImbaQuiz.Application.Mapping;
-//using ImbaQuiz.Application.Services;
-using ImbaQuiz.Domain.Interfaces;
-using ImbaQuiz.infrastructure.Persistence;
-using ImbaQuiz.infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.OpenApi.Models;
-using System;
+using ImbaQuiz.API.Extensions;
+using ImbaQuiz.API.Middleware; 
 using ImbaQuiz.infrastructure.Extensions;
+using ImbaQuiz.Application.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllers();
-
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddInfrastructure();
-
+ 
+builder.Services.AddApiServices(builder.Configuration);
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices();
 
 var app = builder.Build();
+ 
+app.UseMiddleware<ExceptionMiddleware>();
 
+app.UseCors("AllowAllOrigins");
+app.MapControllers();
+app.UseSwagger();
+app.UseSwaggerUI();
 app.Run();
