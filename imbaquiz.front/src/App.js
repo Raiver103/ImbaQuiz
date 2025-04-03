@@ -3,7 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Answers from "./components/Answers";
 import Questions from "./components/Questions";
 import Quizzes from "./components/Quizzes";
-import QuizGame from "./components/QuizGame"; // Подключаем игру
+import QuizGame from "./components/QuizGame";  
 import "./App.css";
 import React, { useEffect } from "react";
 import axios from "axios"; 
@@ -78,9 +78,9 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/quizzes" element={<Quizzes />} />
-              <Route path="/quiz-game/:quizId" element={<QuizGame />} /> {/* Страница игры */}
-              <Route path="/questions/:quizId" element={<QuestionWrapper />} /> {/* Страница вопросов */}
-              <Route path="/answers/:questionId" element={<AnswerWrapper />} /> {/* Страница ответов */} 
+              <Route path="/quiz-game/:quizId" element={<QuizGame />} />  
+              <Route path="/questions/:quizId" element={<QuestionWrapper />} /> 
+              <Route path="/answers/:questionId" element={<AnswerWrapper />} /> 
             </Routes>
           </div>
         </main>
@@ -92,8 +92,7 @@ function App() {
     </Router>
   );
 }
-
-// Обёртки для передачи параметров в компоненты
+ 
 const QuestionWrapper = () => {
   const { quizId } = useParams();
   return <Questions quizId={quizId} />;
@@ -110,8 +109,7 @@ function Home() {
       <h2>Welcome to Imba Quiz!</h2>
       <p className="hero-text">Create and manage quizzes with ease</p>
       <div className="cta-buttons">
-        <Link to="/quizzes" className="cta-button primary">Explore Quizzes</Link>
-        <Link to="/quiz-game/1" className="cta-button secondary">Start Quiz Game</Link> {/* Пример квиза */}
+        <Link to="/quizzes" className="cta-button primary">Explore Quizzes</Link> 
       </div>
     </div>
   );

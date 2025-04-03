@@ -16,7 +16,7 @@ const Questions = ({ quizId }) => {
       if (!quizId) return;
       const token = await getAccessTokenSilently();
       try {
-        const res = await axios.get(`https://localhost:7280/api/questions/byQuiz/${quizId}`, {
+        const res = await axios.get(`https://localhost:7280/api/questions/by-quiz/${quizId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setQuestions(res.data);

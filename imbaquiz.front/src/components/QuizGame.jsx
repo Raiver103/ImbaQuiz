@@ -15,17 +15,16 @@ const QuizGame = () => {
   const [started, setStarted] = useState(false);
   
   const timerRef = useRef(null);
-  const isTransitioningRef = useRef(false); // Флаг для отслеживания перехода
-
-  // Загрузка вопросов
+  const isTransitioningRef = useRef(false);  
+ 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get(`https://localhost:7280/api/questions/byQuiz/${quizId}`);
+        const response = await axios.get(`https://localhost:7280/api/questions/by-quiz/${quizId}`);
         const questionsWithAnswers = await Promise.all(
           response.data.map(async (question) => {
             try {
-              const answersRes = await axios.get(`https://localhost:7280/api/answers/byQuestion/${question.id}`);
+              const answersRes = await axios.get(`https://localhost:7280/api/answers/by-question/${question.id}`);
               return { ...question, answers: answersRes.data || [] };
             } catch (error) {
               console.error(`Error fetching answers for question ${question.id}:`, error);
@@ -40,16 +39,14 @@ const QuizGame = () => {
     };
     fetchQuestions();
   }, [quizId]);
-
-  // Очистка таймера
+ 
   const clearTimer = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
   };
-
-  // Переход к следующему вопросу
+ 
   const handleNextQuestion = () => {
     if (isTransitioningRef.current) return;
     isTransitioningRef.current = true;
@@ -64,14 +61,12 @@ const QuizGame = () => {
     } else {
       setGameOver(true);
     }
-    
-    // Сбрасываем флаг после обновления состояния
+     
     setTimeout(() => {
       isTransitioningRef.current = false;
     }, 0);
   };
-
-  // Запуск таймера
+ 
   const startTimer = () => {
     clearTimer();
     setTimeLeft(10);
@@ -86,8 +81,7 @@ const QuizGame = () => {
       });
     }, 1000);
   };
-
-  // Обработка выбора ответа
+ 
   const handleAnswerClick = (answer) => {
     if (!showAnswer && !isTransitioningRef.current) {
       clearTimer();
@@ -96,13 +90,11 @@ const QuizGame = () => {
         setScore(prev => prev + 1);
       }
       setShowAnswer(true);
-      
-      // Автоматический переход через 2 секунды
+       
       setTimeout(handleNextQuestion, 2000);
     }
   };
-
-  // Управление таймером
+ 
   useEffect(() => {
     if (started && !gameOver && !showAnswer && questions.length > 0) {
       startTimer();
@@ -110,8 +102,7 @@ const QuizGame = () => {
     
     return () => clearTimer();
   }, [started, gameOver, showAnswer, currentQuestionIndex, questions.length]);
-
-  // Сброс игры
+ 
   const restartGame = () => {
     clearTimer();
     isTransitioningRef.current = false;

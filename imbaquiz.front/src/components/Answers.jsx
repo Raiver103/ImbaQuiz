@@ -17,7 +17,7 @@ const Answers = ({ questionId }) => {
       if (!questionId) return;
       const token = await getAccessTokenSilently();
       try {
-        const res = await axios.get(`https://localhost:7280/api/answers/byQuestion/${questionId}`, {
+        const res = await axios.get(`https://localhost:7280/api/answers/by-question/${questionId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setAnswers(res.data);
