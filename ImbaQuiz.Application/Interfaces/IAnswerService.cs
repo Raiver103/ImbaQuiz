@@ -10,12 +10,13 @@ namespace ImbaQuiz.Application.Interfaces
 {
     public interface IAnswerService
     {
-        Task<IEnumerable<AnswerDTO>> GetAllAsync();
-        Task<AnswerDTO> GetByIdAsync(int id);
-        Task<AnswerDTO> CreateAsync(AnswerDTO answerDto);
-        Task<AnswerDTO> UpdateAsync(int id, AnswerDTO answerDto);
-        Task DeleteAsync(int id);
-        Task<IEnumerable<AnswerDTO>> GetByQuestionIdAsync(int questionId);
+        Task<IEnumerable<AnswerDTO>> GetAllAsync(CancellationToken cancellationToken);
+        Task<AnswerDTO> GetByIdAsync(int id, CancellationToken cancellationToken);
+        Task<AnswerDTO> CreateAsync(AnswerDTO answerDto, CancellationToken cancellationToken);
+        Task<AnswerDTO> UpdateAsync(int id, AnswerDTO answerDto, CancellationToken cancellationToken);
+        Task DeleteAsync(int id, CancellationToken cancellationToken);
+        Task<IEnumerable<AnswerDTO>> GetByQuestionIdAsync(int questionId, CancellationToken cancellationToken);
     }
+
 
 }

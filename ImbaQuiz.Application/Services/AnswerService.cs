@@ -12,42 +12,42 @@ using System.Threading.Tasks;
 namespace ImbaQuiz.Application.Services
 {
     public class AnswerService(IAnswerRepository _answerRepository, IMapper _mapper) : IAnswerService
-    {  
-        public async Task<IEnumerable<AnswerDTO>> GetAllAsync()
+    {
+        public async Task<IEnumerable<AnswerDTO>> GetAllAsync(CancellationToken cancellationToken)
         {
-            var answers = await _answerRepository.GetAllAsync();
+            var answers = await _answerRepository.GetAllAsync(cancellationToken);
             return _mapper.Map<IEnumerable<AnswerDTO>>(answers);
         }
 
-        public async Task<AnswerDTO> GetByIdAsync(int id)
+        public async Task<AnswerDTO> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var answer = await _answerRepository.GetByIdAsync(id);
+            var answer = await _answerRepository.GetByIdAsync(id, cancellationToken);
             return _mapper.Map<AnswerDTO>(answer);
         }
 
-        public async Task<AnswerDTO> CreateAsync(AnswerDTO answerDto)
+        public async Task<AnswerDTO> CreateAsync(AnswerDTO answerDto, CancellationToken cancellationToken)
         {
             var answer = _mapper.Map<Answer>(answerDto);
-            var createdAnswer = await _answerRepository.CreateAsync(answer);
+            var createdAnswer = await _answerRepository.CreateAsync(answer, cancellationToken);
             return _mapper.Map<AnswerDTO>(createdAnswer);
         }
 
-        public async Task<AnswerDTO> UpdateAsync(int id, AnswerDTO answerDto)
+        public async Task<AnswerDTO> UpdateAsync(int id, AnswerDTO answerDto, CancellationToken cancellationToken)
         {
             var answer = _mapper.Map<Answer>(answerDto);
-            answer.Id = id;  
-            var updatedAnswer = await _answerRepository.UpdateAsync(answer);
+            answer.Id = id;
+            var updatedAnswer = await _answerRepository.UpdateAsync(answer, cancellationToken);
             return _mapper.Map<AnswerDTO>(updatedAnswer);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            await _answerRepository.DeleteAsync(id);
+            await _answerRepository.DeleteAsync(id, cancellationToken);
         }
 
-        public async Task<IEnumerable<AnswerDTO>> GetByQuestionIdAsync(int questionId)
-        { 
-            var answers = await _answerRepository.GetByQuestionIdAsync(questionId);
+        public async Task<IEnumerable<AnswerDTO>> GetByQuestionIdAsync(int questionId, CancellationToken cancellationToken)
+        {
+            var answers = await _answerRepository.GetByQuestionIdAsync(questionId, cancellationToken);
             return answers.Select(a => new AnswerDTO
             {
                 Id = a.Id,
@@ -56,5 +56,5 @@ namespace ImbaQuiz.Application.Services
                 QuestionId = a.QuestionId
             });
         }
-    }
+    } 
 }

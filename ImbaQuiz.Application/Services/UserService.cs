@@ -3,46 +3,53 @@ using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ImbaQuiz.Application.Services
 {
-    public class UserService(IUserRepository _userRepository, IMapper _mapper) : IUserService
+    public class UserService : IUserService
     { 
-        public async Task<IEnumerable<UserDTO>> GetAllAsync()
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
-            var users = await _userRepository.GetAllAsync();
+            _userRepository = userRepository;
+            _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<UserDTO>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            var users = await _userRepository.GetAllAsync(cancellationToken);
             return _mapper.Map<IEnumerable<UserDTO>>(users);
         }
 
-        public async Task<UserDTO> GetByIdAsync(string id)
+        public async Task<UserDTO> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await _userRepository.GetByIdAsync(id, cancellationToken);
             return _mapper.Map<UserDTO>(user);
         }
 
-        public async Task<UserDTO> CreateAsync(UserDTO userDto)
+        public async Task<UserDTO> CreateAsync(UserDTO userDto, CancellationToken cancellationToken)
         {
             var user = _mapper.Map<User>(userDto);
-            var createdUser = await _userRepository.CreateAsync(user);
+            var createdUser = await _userRepository.CreateAsync(user, cancellationToken);
             return _mapper.Map<UserDTO>(createdUser);
         }
 
-        public async Task<UserDTO> UpdateAsync(string id, UserDTO userDto)
+        public async Task<UserDTO> UpdateAsync(string id, UserDTO userDto, CancellationToken cancellationToken)
         {
             var user = _mapper.Map<User>(userDto);
             user.Id = id; 
-            var updatedUser = await _userRepository.UpdateAsync(user);
+            var updatedUser = await _userRepository.UpdateAsync(user, cancellationToken);
             return _mapper.Map<UserDTO>(updatedUser);
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(string id, CancellationToken cancellationToken)
         {
-            await _userRepository.DeleteAsync(id);
+            await _userRepository.DeleteAsync(id, cancellationToken);
         }
     } 
 }
