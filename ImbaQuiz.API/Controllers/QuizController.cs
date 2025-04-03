@@ -10,14 +10,8 @@ namespace ImbaQuiz.API.Controllers
 { 
     [ApiController]
     [Route("api/quizzes")]
-    public class QuizzesController : ControllerBase
-    {
-        private readonly IQuizService _quizService;
- 
-        public QuizzesController(IQuizService quizService)
-        {
-            _quizService = quizService;
-        }
+    public class QuizzesController(IQuizService _quizService) : ControllerBase
+    { 
 
         [HttpGet]
         public async Task<OkObjectResult> GetAllQuizzes(CancellationToken cancellationToken)

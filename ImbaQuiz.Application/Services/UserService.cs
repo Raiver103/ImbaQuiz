@@ -9,16 +9,8 @@ using System.Threading.Tasks;
 
 namespace ImbaQuiz.Application.Services
 {
-    public class UserService : IUserService
-    { 
-        private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
-
-        public UserService(IUserRepository userRepository, IMapper mapper)
-        {
-            _userRepository = userRepository;
-            _mapper = mapper;
-        }
+    public class UserService(IUserRepository _userRepository, IMapper _mapper) : IUserService
+    {  
 
         public async Task<IEnumerable<UserDTO>> GetAllAsync(CancellationToken cancellationToken)
         {

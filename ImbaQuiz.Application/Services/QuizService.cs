@@ -9,16 +9,8 @@ using System.Threading.Tasks;
 
 namespace ImbaQuiz.Application.Services
 {
-    public class QuizService : IQuizService
-    { 
-        private readonly IQuizRepository _quizRepository;
-        private readonly IMapper _mapper;
-
-        public QuizService(IQuizRepository quizRepository, IMapper mapper)
-        {
-            _quizRepository = quizRepository;
-            _mapper = mapper;
-        }
+    public class QuizService(IQuizRepository _quizRepository, IMapper _mapper) : IQuizService
+    {  
 
         public async Task<IEnumerable<QuizDTO>> GetAllAsync(CancellationToken cancellationToken)
         {
