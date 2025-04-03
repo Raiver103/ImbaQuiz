@@ -44,7 +44,7 @@ namespace ImbaQuiz.Application.Services
         public async Task<AnswerDTO> UpdateAsync(int id, AnswerDTO answerDto)
         {
             var answer = _mapper.Map<Answer>(answerDto);
-            answer.Id = id; // Устанавливаем ID для обновления
+            answer.Id = id;  
             var updatedAnswer = await _answerRepository.UpdateAsync(answer);
             return _mapper.Map<AnswerDTO>(updatedAnswer);
         }
@@ -55,8 +55,7 @@ namespace ImbaQuiz.Application.Services
         }
 
         public async Task<IEnumerable<AnswerDTO>> GetByQuestionIdAsync(int questionId)
-        {
-            // Реализация получения всех ответов для конкретного вопроса
+        { 
             var answers = await _answerRepository.GetByQuestionIdAsync(questionId);
             return answers.Select(a => new AnswerDTO
             {

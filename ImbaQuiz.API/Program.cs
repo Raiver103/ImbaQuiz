@@ -1,21 +1,21 @@
 using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Application.Mapping;
+using ImbaQuiz.Application.Extensions;
 using ImbaQuiz.Application.Services;
 using ImbaQuiz.Domain.Interfaces;
 using ImbaQuiz.infrastructure.Persistence;
 using ImbaQuiz.infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore; 
 using Microsoft.OpenApi.Models;
 using System;
 using ImbaQuiz.infrastructure.Extensions;
+using ImbaQuiz.API.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
    options.AddPolicy("AllowAllOrigins", policy =>
     {
-       // ��������� ������� � ������ ��������� (����� ���������� ������ ������ �������)
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
               .AllowAnyHeader();
@@ -35,13 +35,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddInfrastructure();
+builder.Services.AddApplicationServices();
 
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IQuizService, QuizService>();
-builder.Services.AddScoped<IQuestionService, QuestionService>();
-builder.Services.AddScoped<IAnswerService, AnswerService>();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(new ExceptionFilter()); // Добавьте фильтр для обработки ошибок
+});
 
 var app = builder.Build();
+
+app.UseMiddleware<ImbaQuiz.API.Controllers.ExceptionMiddleware>();
+app.UseExceptionHandler("/error");
 
 app.UseCors("AllowAllOrigins");
 app.MapControllers();
