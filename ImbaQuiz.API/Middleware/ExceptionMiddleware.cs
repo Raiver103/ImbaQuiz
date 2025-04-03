@@ -15,26 +15,24 @@ namespace ImbaQuiz.API.Controllers
       {
           try
           {
-              await _next(httpContext); // Продолжаем выполнение запроса
+              await _next(httpContext);  
           }
           catch (Exception ex)
           {
-              await HandleExceptionAsync(httpContext, ex); // Обработка исключений
+              await HandleExceptionAsync(httpContext, ex);  
           }
       }
 
       private Task HandleExceptionAsync(HttpContext context, Exception exception)
       {
           context.Response.ContentType = "application/json";
-          
-          // Вы можете добавить сюда обработку разных типов ошибок
+           
           if (exception is NotFoundException)
           {
               context.Response.StatusCode = StatusCodes.Status404NotFound;
               return context.Response.WriteAsync(new { message = exception.Message }.ToString());
           }
-          
-          // Для остальных ошибок, возвращаем 500
+           
           context.Response.StatusCode = StatusCodes.Status500InternalServerError;
           return context.Response.WriteAsync(new { message = "An unexpected error occurred." }.ToString());
       }
