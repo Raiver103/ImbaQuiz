@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import { useAuth0 } from "@auth0/auth0-react";
+import { getQuestionsWithAnswers } from "../services/api";
 import "../styles/QuizGame.css";
 
 const QuizGame = () => {
   const { quizId } = useParams();
+  const { getAccessTokenSilently } = useAuth0();
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -13,6 +15,8 @@ const QuizGame = () => {
   const [timeLeft, setTimeLeft] = useState(10);
   const [gameOver, setGameOver] = useState(false);
   const [started, setStarted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   const timerRef = useRef(null);
   const isTransitioningRef = useRef(false);  
@@ -20,26 +24,21 @@ const QuizGame = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get(`https://localhost:7280/api/questions/by-quiz/${quizId}`);
-        const questionsWithAnswers = await Promise.all(
-          response.data.map(async (question) => {
-            try {
-              const answersRes = await axios.get(`https://localhost:7280/api/answers/by-question/${question.id}`);
-              return { ...question, answers: answersRes.data || [] };
-            } catch (error) {
-              console.error(`Error fetching answers for question ${question.id}:`, error);
-              return { ...question, answers: [] };
-            }
-          })
-        );
+        setLoading(true);
+        const questionsWithAnswers = await getQuestionsWithAnswers(quizId, getAccessTokenSilently);
         setQuestions(questionsWithAnswers);
-      } catch (error) {
-        console.error("Error fetching questions:", error);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching questions:", err);
+        setError("Failed to load questions. Please try again later.");
+      } finally {
+        setLoading(false);
       }
     };
+    
     fetchQuestions();
-  }, [quizId]);
- 
+  }, [quizId, getAccessTokenSilently]);
+
   const clearTimer = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -119,9 +118,20 @@ const QuizGame = () => {
     return (
       <div className="quiz-container">
         <h2>Quiz Game</h2>
-        <button className="start-button" onClick={() => setStarted(true)}>
-          Начать викторину
-        </button>
+        {error ? (
+          <div className="error-message">
+            <p>{error}</p>
+            <button onClick={() => window.location.reload()}>Retry</button>
+          </div>
+        ) : (
+          <button 
+            className="start-button" 
+            onClick={() => setStarted(true)}
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Start Quiz"}
+          </button>
+        )}
       </div>
     );
   }
@@ -129,13 +139,32 @@ const QuizGame = () => {
   if (gameOver) {
     return (
       <div className="quiz-container">
-        <h2>Игра окончена!</h2>
+        <h2>Game Over!</h2>
         <p className="score-text">
-          Ваш счет: <span className="score-value">{score}</span> из <span className="total-questions">{questions.length}</span>
+          Your score: <span className="score-value">{score}</span> out of <span className="total-questions">{questions.length}</span>
         </p>
         <button className="restart-button" onClick={restartGame}>
-          Начать заново
+          Play Again
         </button>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="quiz-container">
+        <h2>Loading questions...</h2>
+        <div className="loading-spinner"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="quiz-container">
+        <h2>Error</h2>
+        <p className="error-message">{error}</p>
+        <button onClick={() => window.location.reload()}>Retry</button>
       </div>
     );
   }
@@ -143,7 +172,8 @@ const QuizGame = () => {
   if (questions.length === 0) {
     return (
       <div className="quiz-container">
-        <h2>Загрузка вопросов...</h2>
+        <h2>No questions available</h2>
+        <p>This quiz doesn't have any questions yet.</p>
       </div>
     );
   }
@@ -153,8 +183,8 @@ const QuizGame = () => {
   return (
     <div className="quiz-container">
       <div className="quiz-header">
-        <h2>Вопрос {currentQuestionIndex + 1} из {questions.length}</h2>
-        <div className="timer">⏱️ {timeLeft} сек</div>
+        <h2>Question {currentQuestionIndex + 1} of {questions.length}</h2>
+        <div className="timer">⏱️ {timeLeft} sec</div>
       </div>
       
       <div className="question-card">
@@ -189,9 +219,9 @@ const QuizGame = () => {
       {showAnswer && (
         <div className="feedback">
           {selectedAnswer?.isCorrect ? (
-            <p className="correct-feedback">Правильно! ✅</p>
+            <p className="correct-feedback">Correct! ✅</p>
           ) : (
-            <p className="wrong-feedback">Неправильно! ❌</p>
+            <p className="wrong-feedback">Wrong! ❌</p>
           )}
         </div>
       )}

@@ -1,7 +1,7 @@
 // Answers.jsx
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import axios from "axios";
+import { getAnswersByQuestion, createAnswer, deleteAnswer, updateAnswer } from "../services/api";  // Импортируем функции из api.js
 
 const Answers = ({ questionId }) => {
   const { getAccessTokenSilently } = useAuth0();
@@ -15,31 +15,24 @@ const Answers = ({ questionId }) => {
   useEffect(() => {
     const fetchAnswers = async () => {
       if (!questionId) return;
-      const token = await getAccessTokenSilently();
       try {
-        const res = await axios.get(`https://localhost:7280/api/answers/by-question/${questionId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setAnswers(res.data);
+        const data = await getAnswersByQuestion(questionId, getAccessTokenSilently);
+        setAnswers(data);
       } catch (error) {
         console.error("Error fetching answers:", error);
       }
     };
     fetchAnswers();
-  }, [getAccessTokenSilently, questionId]);
+  }, [questionId, getAccessTokenSilently]);
 
   const handleAddAnswer = async (e) => {
     e.preventDefault();
     if (!newAnswerText || !questionId) return;
 
-    const token = await getAccessTokenSilently();
+    const newAnswer = { text: newAnswerText, isCorrect: isCorrectAnswer };
     try {
-      const res = await axios.post(
-        "https://localhost:7280/api/answers",
-        { text: newAnswerText, isCorrect: isCorrectAnswer, questionId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setAnswers([...answers, res.data]);
+      const addedAnswer = await createAnswer(newAnswer, questionId, getAccessTokenSilently);
+      setAnswers([...answers, addedAnswer]);
       setNewAnswerText("");
       setIsCorrectAnswer(false);
     } catch (error) {
@@ -48,11 +41,8 @@ const Answers = ({ questionId }) => {
   };
 
   const handleDeleteAnswer = async (answerId) => {
-    const token = await getAccessTokenSilently();
     try {
-      await axios.delete(`https://localhost:7280/api/answers/${answerId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await deleteAnswer(answerId, getAccessTokenSilently);
       setAnswers(answers.filter((answer) => answer.id !== answerId));
     } catch (error) {
       console.error("Error deleting answer:", error);
@@ -69,17 +59,12 @@ const Answers = ({ questionId }) => {
     e.preventDefault();
     if (!editingAnswer) return;
 
-    const token = await getAccessTokenSilently();
+    const updatedAnswer = { text: editedText, isCorrect: editedCorrect };
     try {
-      await axios.put(
-        `https://localhost:7280/api/answers/${editingAnswer}`,
-        { text: editedText, isCorrect: editedCorrect, questionId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
+      const updated = await updateAnswer(editingAnswer, updatedAnswer, questionId, getAccessTokenSilently);
       setAnswers(
         answers.map((answer) =>
-          answer.id === editingAnswer ? { ...answer, text: editedText, isCorrect: editedCorrect } : answer
+          answer.id === editingAnswer ? { ...answer, text: updated.text, isCorrect: updated.isCorrect } : answer
         )
       );
       setEditingAnswer(null);

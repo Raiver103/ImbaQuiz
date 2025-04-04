@@ -3,6 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Questions from "./Questions";
+import { getQuizzes } from "../services/api"; // Добавьте этот импорт
 
 const Quizzes = () => {
   const { getAccessTokenSilently, user } = useAuth0();
@@ -15,12 +16,9 @@ const Quizzes = () => {
   useEffect(() => {
     const fetchQuizzes = async () => {
       if (!user) return;
-      const token = await getAccessTokenSilently();
-      try {
-        const res = await axios.get("https://localhost:7280/api/quizzes", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const userQuizzes = res.data.filter((quiz) => quiz.userId === user.sub);
+      try { 
+        const allQuizzes = await getQuizzes(getAccessTokenSilently); 
+        const userQuizzes = allQuizzes.filter(quiz => quiz.userId === user.sub);
         setQuizzes(userQuizzes);
       } catch (error) {
         console.error("Error fetching quizzes:", error);

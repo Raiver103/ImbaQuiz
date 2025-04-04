@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import React, { Suspense, lazy, useEffect } from "react";
-import axios from "axios";
+import React, { Suspense, lazy, useEffect } from "react"; 
 import MainLayout from "./layouts/MainLayout";   
+import { getUser, createUser } from "./services/api"; // Импортируем функции для работы с API
 import "./styles/App.css";
 
 const Answers = lazy(() => import("./components/Answers"));
@@ -24,20 +24,23 @@ function App() {
         };
 
         try {
-          const response = await axios.get(`https://localhost:7280/api/users/${userData.id}`);
+          const response = await getUser(userData.id);  // Используем функцию для получения данных пользователя
           if (response.status === 200) { 
             return;
           }
         } catch (error) {
           if (error.response?.status === 404) { 
-              await axios.post("https://localhost:7280/api/users", userData);  
+              await createUser(userData);  // Используем функцию для сохранения нового пользователя
           }
         }
       };
       saveUserToDb();
     }
   }, [user, isAuthenticated]);
- 
+
+  if (isLoading) {
+    return <div>Загрузка...</div>;
+  }
 
   return (
     <Router>
@@ -70,4 +73,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;

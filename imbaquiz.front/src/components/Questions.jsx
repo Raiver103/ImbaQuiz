@@ -1,6 +1,7 @@
+// Questions.jsx
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import axios from "axios";
+import { getQuestionsByQuiz, createQuestion, deleteQuestion, updateQuestion } from "../services/api";  // Импортируем функции из api.js
 import Answers from "./Answers";
 
 const Questions = ({ quizId }) => {
@@ -14,31 +15,24 @@ const Questions = ({ quizId }) => {
   useEffect(() => {
     const fetchQuestions = async () => {
       if (!quizId) return;
-      const token = await getAccessTokenSilently();
       try {
-        const res = await axios.get(`https://localhost:7280/api/questions/by-quiz/${quizId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setQuestions(res.data);
+        const data = await getQuestionsByQuiz(quizId, getAccessTokenSilently);
+        setQuestions(data);
       } catch (error) {
         console.error("Error fetching questions:", error);
       }
     };
     fetchQuestions();
-  }, [getAccessTokenSilently, quizId]);
+  }, [quizId, getAccessTokenSilently]);
 
   const handleAddQuestion = async (e) => {
     e.preventDefault();
     if (!newQuestionText) return;
 
-    const token = await getAccessTokenSilently();
+    const newQuestion = { text: newQuestionText };
     try {
-      const res = await axios.post(
-        "https://localhost:7280/api/questions",
-        { text: newQuestionText, quizId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setQuestions([...questions, res.data]);
+      const addedQuestion = await createQuestion(newQuestion, quizId, getAccessTokenSilently);
+      setQuestions([...questions, addedQuestion]);
       setNewQuestionText("");
     } catch (error) {
       console.error("Error adding question:", error);
@@ -46,11 +40,8 @@ const Questions = ({ quizId }) => {
   };
 
   const handleDeleteQuestion = async (questionId) => {
-    const token = await getAccessTokenSilently();
     try {
-      await axios.delete(`https://localhost:7280/api/questions/${questionId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await deleteQuestion(questionId, getAccessTokenSilently);
       setQuestions(questions.filter((question) => question.id !== questionId));
     } catch (error) {
       console.error("Error deleting question:", error);
@@ -64,15 +55,10 @@ const Questions = ({ quizId }) => {
 
   const handleSaveEdit = async (questionId) => {
     if (!editedText) return;
-    const token = await getAccessTokenSilently();
     try {
-      await axios.put(
-        `https://localhost:7280/api/questions/${questionId}`,
-        { text: editedText, quizId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const updated = await updateQuestion(questionId, { text: editedText }, quizId, getAccessTokenSilently);
       setQuestions(
-        questions.map((q) => (q.id === questionId ? { ...q, text: editedText } : q))
+        questions.map((q) => (q.id === questionId ? { ...q, text: updated.text } : q))
       );
       setEditingQuestionId(null);
     } catch (error) {
