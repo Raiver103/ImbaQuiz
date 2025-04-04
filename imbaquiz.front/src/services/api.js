@@ -3,25 +3,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-
-export const getUser = async (userId) => {
-  try {
-    const response = await axios.get(`${apiUrl}/users/${userId}`);
-    return response;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const createUser = async (userData) => {
-  try {
-    const response = await axios.post(`${apiUrl}/users`, userData);
-    return response;
-  } catch (error) {
-    throw error;
-  }
-};
-
 const createAxiosInstance = (getAccessTokenSilently) => {
   const axiosInstance = axios.create({
     baseURL: apiUrl,  
@@ -41,6 +22,24 @@ const createAxiosInstance = (getAccessTokenSilently) => {
   );
 
   return axiosInstance;
+};
+
+export const getUser = async (userId) => {
+  try {
+    const response = await axios.get(`${apiUrl}/users/${userId}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createUser = async (userData) => {
+  try {
+    const response = await axios.post(`${apiUrl}/users`, userData);
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
  
 export const getAnswersByQuestion = async (questionId, getAccessTokenSilently) => {
@@ -160,8 +159,6 @@ export const deleteQuiz = async (quizId, getAccessTokenSilently) => {
     throw error;
   }
 }; 
- 
- 
 
 export const getAnswersForQuestion = async (questionId, getAccessTokenSilently) => {
   const axiosInstance = createAxiosInstance(getAccessTokenSilently);

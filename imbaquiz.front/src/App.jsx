@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { Suspense, lazy, useEffect } from "react"; 
 import MainLayout from "./layouts/MainLayout";   
-import { getUser, createUser } from "./services/api"; // Импортируем функции для работы с API
+import { getUser, createUser } from "./services/api"; 
 import "./styles/App.css";
 
 const Answers = lazy(() => import("./components/Answers"));
@@ -24,13 +24,13 @@ function App() {
         };
 
         try {
-          const response = await getUser(userData.id);  // Используем функцию для получения данных пользователя
+          const response = await getUser(userData.id);   
           if (response.status === 200) { 
             return;
           }
         } catch (error) {
           if (error.response?.status === 404) { 
-              await createUser(userData);  // Используем функцию для сохранения нового пользователя
+              await createUser(userData);   
           }
         }
       };

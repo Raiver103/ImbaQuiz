@@ -3,7 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Questions from "./Questions";
-import { getQuizzes } from "../services/api"; // Добавьте этот импорт
+import { getQuizzes } from "../services/api"; 
 
 const Quizzes = () => {
   const { getAccessTokenSilently, user } = useAuth0();
