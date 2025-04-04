@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes, Link, useParams } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import "./App.css";
+import "./styles/App.css";
 import axios from "axios"; 
 import React, { useEffect, Suspense, lazy } from "react";
  
@@ -8,6 +8,7 @@ const Answers = lazy(() => import("./components/Answers"));
 const Questions = lazy(() => import("./components/Questions"));
 const Quizzes = lazy(() => import("./components/Quizzes"));
 const QuizGame = lazy(() => import("./components/QuizGame"));
+const Home = lazy(() => import("./pages/Home"));
 
 function App() {
   const { loginWithRedirect, logout, user, isAuthenticated, isLoading } = useAuth0();
@@ -41,11 +42,7 @@ function App() {
       saveUserToDb();
     }
   }, [user, isAuthenticated]);
-
-  if (isLoading) {
-    return <div>Загрузка...</div>;
-  }
-
+ 
   return (
     <Router>
       <header className="App-header">
@@ -104,18 +101,6 @@ const QuestionWrapper = () => {
 const AnswerWrapper = () => {
   const { questionId } = useParams();
   return <Answers questionId={questionId} />;
-};
-
-function Home() {
-  return (
-    <div className="home-hero">
-      <h2>Добро пожаловать в Imba Quiz!</h2>
-      <p className="hero-text">Создавайте и управляйте викторинами с легкостью</p>
-      <div className="cta-buttons">
-        <Link to="/quizzes" className="cta-button primary">Исследовать Викторины</Link> 
-      </div>
-    </div>
-  );
-}
+}; 
 
 export default App;
