@@ -2,9 +2,8 @@ using ImbaQuiz.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Text.Json;
-
-namespace ImbaQuiz.API.Middleware
-{
+namespace ImbaQuiz.API.Middleware 
+{ 
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
@@ -40,6 +39,6 @@ namespace ImbaQuiz.API.Middleware
 
             response.StatusCode = errorResponse.statusCode;
             return context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
-        }
+        } 
     }
 }

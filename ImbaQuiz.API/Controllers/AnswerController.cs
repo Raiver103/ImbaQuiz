@@ -57,6 +57,6 @@ namespace ImbaQuiz.API.Controllers
             }
             return Ok(answers);
         }
+    }
 
-    } 
 }
