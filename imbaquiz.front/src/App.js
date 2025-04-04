@@ -1,12 +1,13 @@
 import { BrowserRouter as Router, Route, Routes, Link, useParams } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import Answers from "./components/Answers";
-import Questions from "./components/Questions";
-import Quizzes from "./components/Quizzes";
-import QuizGame from "./components/QuizGame";  
 import "./App.css";
-import React, { useEffect } from "react";
 import axios from "axios"; 
+import React, { useEffect, Suspense, lazy } from "react";
+ 
+const Answers = lazy(() => import("./components/Answers"));
+const Questions = lazy(() => import("./components/Questions"));
+const Quizzes = lazy(() => import("./components/Quizzes"));
+const QuizGame = lazy(() => import("./components/QuizGame"));
 
 function App() {
   const { loginWithRedirect, logout, user, isAuthenticated, isLoading } = useAuth0();
@@ -17,7 +18,7 @@ function App() {
         const userData = {
           id: user.sub,
           email: user.email || "No email provided",
-          name: user.name,
+          name: user.name || "No name provided",
         };
 
         try {
@@ -42,21 +43,21 @@ function App() {
   }, [user, isAuthenticated]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Загрузка...</div>;
   }
 
   return (
     <Router>
       <header className="App-header">
-        <h1>Welcome to Imba Quiz</h1>
+        <h1>Добро пожаловать в Imba Quiz</h1>
         {!isAuthenticated ? (
-          <button onClick={() => loginWithRedirect()}>Login with Auth0</button>
+          <button onClick={() => loginWithRedirect()}>Войти с Auth0</button>
         ) : (
           <div>
-            <h2>Hello, {user?.name}</h2>
+            <h2>Привет, {user?.name}</h2>
             <p>Email: {user?.email}</p>
             <button onClick={() => logout({ returnTo: window.location.origin })}>
-              Logout
+              Выйти
             </button>
           </div>
         )}
@@ -67,26 +68,28 @@ function App() {
           <div className="header-content">
             <h1 className="logo">ImbaQuiz</h1>
             <nav className="main-nav">
-              <Link to="/" className="nav-link">Home</Link>
-              <Link to="/quizzes" className="nav-link">Quizzes</Link>
+              <Link to="/" className="nav-link">Главная</Link>
+              <Link to="/quizzes" className="nav-link">Викторины</Link>
             </nav>
           </div>
         </header>
 
         <main className="content">
-          <div className="content-container">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/quizzes" element={<Quizzes />} />
-              <Route path="/quiz-game/:quizId" element={<QuizGame />} />  
-              <Route path="/questions/:quizId" element={<QuestionWrapper />} /> 
-              <Route path="/answers/:questionId" element={<AnswerWrapper />} /> 
-            </Routes>
+          <div className="content-container"> 
+            <Suspense fallback={<div>Загрузка...</div>}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/quizzes" element={<Quizzes />} />
+                <Route path="/quiz-game/:quizId" element={<QuizGame />} />  
+                <Route path="/questions/:quizId" element={<QuestionWrapper />} /> 
+                <Route path="/answers/:questionId" element={<AnswerWrapper />} /> 
+              </Routes>
+            </Suspense>
           </div>
         </main>
 
         <footer className="app-footer">
-          <p>© 2023 ImbaQuiz - Test your knowledge</p>
+          <p>© 2023 ImbaQuiz - Проверь свои знания</p>
         </footer>
       </div>
     </Router>
@@ -106,10 +109,10 @@ const AnswerWrapper = () => {
 function Home() {
   return (
     <div className="home-hero">
-      <h2>Welcome to Imba Quiz!</h2>
-      <p className="hero-text">Create and manage quizzes with ease</p>
+      <h2>Добро пожаловать в Imba Quiz!</h2>
+      <p className="hero-text">Создавайте и управляйте викторинами с легкостью</p>
       <div className="cta-buttons">
-        <Link to="/quizzes" className="cta-button primary">Explore Quizzes</Link> 
+        <Link to="/quizzes" className="cta-button primary">Исследовать Викторины</Link> 
       </div>
     </div>
   );

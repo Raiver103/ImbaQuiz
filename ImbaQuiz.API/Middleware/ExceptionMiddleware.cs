@@ -3,11 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Text.Json;
 namespace ImbaQuiz.API.Middleware 
-{
-   
-
-
-
+{ 
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
