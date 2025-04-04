@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import "./QuizGame.css";
+import "../styles/QuizGame.css";
 
 const QuizGame = () => {
   const { quizId } = useParams();
