@@ -1,15 +1,17 @@
-﻿using AutoMapper;
-using FluentAssertions;
+﻿using AutoFixture;
+using AutoMapper;
 using ImbaQuiz.Application.DTOs;
+using ImbaQuiz.Application.Mapping;
 using ImbaQuiz.Application.Services;
 using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Interfaces;
 using Moq;
-using System;
+using Shouldly;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace ImbaQuiz.Tests.UnitTests.Services
 {
@@ -18,29 +20,30 @@ namespace ImbaQuiz.Tests.UnitTests.Services
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly IMapper _mapper;
         private readonly UserService _userService;
+        private readonly Fixture _fixture;
 
         public UserServiceTests()
-        {
+        { 
+            _fixture = new Fixture();
+             
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+             
             _userRepositoryMock = new Mock<IUserRepository>();
-
+             
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<User, UserDTO>().ReverseMap();
+                cfg.AddProfile<MappingProfile>();
             });
-
             _mapper = config.CreateMapper();
+             
             _userService = new UserService(_userRepositoryMock.Object, _mapper);
         }
 
         [Fact]
         public async Task GetAllAsync_ShouldReturnUsers()
         {
-            // Arrange
-            var users = new List<User>
-            {
-                new User { Id = "1", Name = "Alice" },
-                new User { Id = "2", Name = "Bob" }
-            };
+            // Arrange 
+            var users = _fixture.CreateMany<User>(2).ToList();
 
             _userRepositoryMock.Setup(repo => repo.GetAllAsync(It.IsAny<CancellationToken>()))
                                .ReturnsAsync(users);
@@ -49,34 +52,40 @@ namespace ImbaQuiz.Tests.UnitTests.Services
             var result = await _userService.GetAllAsync(CancellationToken.None);
 
             // Assert
-            result.Should().NotBeNull();
-            result.Should().HaveCount(2);
+            result.ShouldNotBeNull();
+            result.Count().ShouldBe(2);
+            var resultList = result.ToList();
+            for (int i = 0; i < users.Count; i++)
+            {
+                resultList[i].Id.ShouldBe(users[i].Id);
+                resultList[i].Name.ShouldBe(users[i].Name);
+            }
         }
 
         [Fact]
         public async Task GetByIdAsync_ShouldReturnUser_WhenExists()
         {
-            // Arrange
-            var user = new User { Id = "1", Name = "Alice" };
+            // Arrange 
+            var user = _fixture.Create<User>();
 
-            _userRepositoryMock.Setup(repo => repo.GetByIdAsync("1", It.IsAny<CancellationToken>()))
+            _userRepositoryMock.Setup(repo => repo.GetByIdAsync(user.Id, It.IsAny<CancellationToken>()))
                                .ReturnsAsync(user);
 
             // Act
-            var result = await _userService.GetByIdAsync("1", CancellationToken.None);
+            var result = await _userService.GetByIdAsync(user.Id, CancellationToken.None);
 
             // Assert
-            result.Should().NotBeNull();
-            result.Id.Should().Be("1");
-            result.Name.Should().Be("Alice");
+            result.ShouldNotBeNull();
+            result.Id.ShouldBe(user.Id);
+            result.Name.ShouldBe(user.Name);
         }
 
         [Fact]
         public async Task CreateAsync_ShouldReturnCreatedUser()
         {
-            // Arrange
-            var userDto = new UserDTO { Id = "1", Name = "Charlie" };
-            var user = new User { Id = "1", Name = "Charlie" };
+            // Arrange  
+            var userDto = _fixture.Create<UserDTO>();
+            var user = _mapper.Map<User>(userDto);
 
             _userRepositoryMock.Setup(repo => repo.CreateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
                                .ReturnsAsync(user);
@@ -85,43 +94,47 @@ namespace ImbaQuiz.Tests.UnitTests.Services
             var result = await _userService.CreateAsync(userDto, CancellationToken.None);
 
             // Assert
-            result.Should().NotBeNull();
-            result.Id.Should().Be("1");
-            result.Name.Should().Be("Charlie");
+            result.ShouldNotBeNull();
+            result.Id.ShouldBe(user.Id);
+            result.Name.ShouldBe(user.Name);
         }
 
         [Fact]
         public async Task UpdateAsync_ShouldReturnUpdatedUser()
         {
-            // Arrange
-            var userDto = new UserDTO { Id = "1", Name = "Updated Name" };
-            var user = new User { Id = "1", Name = "Updated Name" };
+            // Arrange 
+            var userId = _fixture.Create<string>();
+            var userDto = _fixture.Create<UserDTO>();
+            var user = _mapper.Map<User>(userDto);
+            user.Id = userId;
 
             _userRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
                                .ReturnsAsync(user);
 
             // Act
-            var result = await _userService.UpdateAsync("1", userDto, CancellationToken.None);
+            var result = await _userService.UpdateAsync(userId, userDto, CancellationToken.None);
 
             // Assert
-            result.Should().NotBeNull();
-            result.Id.Should().Be("1");
-            result.Name.Should().Be("Updated Name");
+            result.ShouldNotBeNull();
+            result.Id.ShouldBe(userId);
+            result.Name.ShouldBe(userDto.Name);
         }
 
         [Fact]
         public async Task DeleteAsync_ShouldCallRepositoryOnce()
         {
-            // Arrange
-            _userRepositoryMock.Setup(repo => repo.DeleteAsync("1", It.IsAny<CancellationToken>()))
+            // Arrange 
+            var userId = _fixture.Create<string>();
+
+            _userRepositoryMock.Setup(repo => repo.DeleteAsync(userId, It.IsAny<CancellationToken>()))
                                .Returns(Task.CompletedTask)
                                .Verifiable();
 
             // Act
-            await _userService.DeleteAsync("1", CancellationToken.None);
+            await _userService.DeleteAsync(userId, CancellationToken.None);
 
             // Assert
-            _userRepositoryMock.Verify(repo => repo.DeleteAsync("1", It.IsAny<CancellationToken>()), Times.Once);
+            _userRepositoryMock.Verify(repo => repo.DeleteAsync(userId, It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
