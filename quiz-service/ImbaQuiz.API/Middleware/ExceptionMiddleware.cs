@@ -1,4 +1,5 @@
 using ImbaQuiz.Domain.Exceptions;
+using ImbaQuiz.infrastructure.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Text.Json;
@@ -7,10 +8,12 @@ namespace ImbaQuiz.API.Middleware
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogSender _logSender;
 
-        public ExceptionMiddleware(RequestDelegate next)
+        public ExceptionMiddleware(RequestDelegate next, ILogSender logSender)
         {
             _next = next;
+            _logSender = logSender;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -20,7 +23,8 @@ namespace ImbaQuiz.API.Middleware
                 await _next(context);
             }
             catch (Exception ex)
-            {
+            { 
+                _logSender.SendLog($"An error occurred: {ex.Message}\n{ex.StackTrace}");
                 await HandleExceptionAsync(context, ex);
             }
         }
@@ -39,6 +43,6 @@ namespace ImbaQuiz.API.Middleware
 
             response.StatusCode = errorResponse.statusCode;
             return context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
-        } 
+        }
     }
 }
