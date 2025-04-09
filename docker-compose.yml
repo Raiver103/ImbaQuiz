@@ -10,6 +10,7 @@ services:
       - "5000:80"   # Прокси порта API (можно изменить на другой)
     depends_on:
       - db
+      - rabbitmq
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
@@ -45,16 +46,38 @@ services:
     networks:
       - imbaquiz-net
     restart: always
+   
+  # Лог-сервис
+  log-service:
+    build:
+      context: ./log-service
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80"
+    networks:
+      - imbaquiz-net
+    depends_on:
+      - rabbitmq
+      - mongo
+    restart: always
 
-  # Дополнительные сервисы, например, RabbitMQ
-  # rabbitmq:
-  #   image: "rabbitmq:management"
-  #   ports:
-  #     - "15672:15672"  # Для доступа к RabbitMQ через браузер
-  #     - "5672:5672"    # Для работы с очередями
-  #   networks:
-  #     - imbaquiz-net
-  #   restart: always
+  # MongoDB
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - imbaquiz-net
+    restart: always
+ 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"     # Порт для общения между сервисами
+      - "15672:15672"   # Веб-интерфейс RabbitMQ
+    networks:
+      - imbaquiz-net
+    restart: always
 
 # Настройки сети
 networks:
