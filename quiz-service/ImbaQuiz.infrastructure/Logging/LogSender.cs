@@ -10,7 +10,7 @@ namespace ImbaQuiz.API.Services
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "localhost",
+                HostName = "rabbitmq", // имя сервиса в docker-compose
                 UserName = "guest",
                 Password = "guest"
             };
@@ -22,12 +22,11 @@ namespace ImbaQuiz.API.Services
 
             var body = Encoding.UTF8.GetBytes(message);
 
-            channel.BasicPublish(
-                exchange: "",
-                routingKey: "logs",
-                basicProperties: null,
-                body: body
-            );
+            channel.BasicPublish(exchange: "",
+                                routingKey: "logs",
+                                basicProperties: null,
+                                body: body);
         }
     }
+
 }

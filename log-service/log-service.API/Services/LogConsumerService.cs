@@ -14,7 +14,7 @@ namespace log_service.API.Services
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "localhost",
+                HostName = "rabbitmq",
                 UserName = "guest",
                 Password = "guest"
             };
@@ -35,28 +35,6 @@ namespace log_service.API.Services
 
             return Task.CompletedTask;
         }
-
-        //protected override Task ExecuteAsync(CancellationToken stoppingToken)
-        //{
-        //    var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-        //    _connection = factory.CreateConnection();
-        //    _channel = _connection.CreateModel();
-
-        //    _channel.QueueDeclare(queue: "logs", durable: true, exclusive: false, autoDelete: false);
-
-        //    var consumer = new EventingBasicConsumer(_channel);
-        //    consumer.Received += (model, ea) =>
-        //    {
-        //        var body = ea.Body.ToArray();
-        //        var message = Encoding.UTF8.GetString(body);
-
-        //        Log.Information("[LOG] {Message}", message);
-        //    };
-
-        //    _channel.BasicConsume(queue: "logs", autoAck: true, consumer: consumer);
-
-        //    return Task.CompletedTask;
-        //}
 
         public override void Dispose()
         {

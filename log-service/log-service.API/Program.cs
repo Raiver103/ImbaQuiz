@@ -1,21 +1,23 @@
 using log_service.API.Services;
 using Serilog;
+using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.Console(new RenderedCompactJsonFormatter())
+    .WriteTo.MongoDB("mongodb://mongo:27017/logs", collectionName: "logEntries")
+    .Enrich.FromLogContext()
     .CreateLogger();
 
 builder.Host.UseSerilog();
+builder.Services.AddHostedService<LogConsumerService>();
 
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
-builder.Services.AddHostedService<LogConsumerService>();
 
 var app = builder.Build();
 
