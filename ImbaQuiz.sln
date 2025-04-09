@@ -26,13 +26,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImbaQuiz.Tests", "quiz-service\ImbaQuiz.Tests\ImbaQuiz.Tests.csproj", "{601894F0-72EA-46F6-AC8E-B65C0A908BF7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "log-service", "log-service", "{DC5ED1D5-E089-4C50-B3E9-87B460BC4A3D}"
-	ProjectSection(SolutionItems) = preProject
-		Dockerfile.txt = Dockerfile.txt
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "chat-service", "chat-service", "{483CCBC8-260E-4D77-8872-7387B222C2FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "log-service.API", "log-service.API\log-service.API.csproj", "{DC7313AF-6C2C-4C01-9F22-B9E8F213F708}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "log-service.API", "log-service\log-service.API\log-service.API.csproj", "{27BF5916-D5D3-416F-83C6-6C6E0B03C12E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,10 +57,10 @@ Global
 		{601894F0-72EA-46F6-AC8E-B65C0A908BF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{601894F0-72EA-46F6-AC8E-B65C0A908BF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{601894F0-72EA-46F6-AC8E-B65C0A908BF7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC7313AF-6C2C-4C01-9F22-B9E8F213F708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC7313AF-6C2C-4C01-9F22-B9E8F213F708}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC7313AF-6C2C-4C01-9F22-B9E8F213F708}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC7313AF-6C2C-4C01-9F22-B9E8F213F708}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27BF5916-D5D3-416F-83C6-6C6E0B03C12E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27BF5916-D5D3-416F-83C6-6C6E0B03C12E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27BF5916-D5D3-416F-83C6-6C6E0B03C12E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27BF5916-D5D3-416F-83C6-6C6E0B03C12E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +76,6 @@ Global
 		{74F82C81-81EC-4792-8436-28E6642DC710} = {027D5D94-01E2-43D3-9AA5-477CEB3C3D64}
 		{C8F481AC-69E3-456C-980D-D4447CCB473D} = {69830564-6D30-4F9B-9E58-A0D643B9639B}
 		{601894F0-72EA-46F6-AC8E-B65C0A908BF7} = {27492E9B-D2AC-4D97-969B-27877B23CC03}
-		{DC7313AF-6C2C-4C01-9F22-B9E8F213F708} = {DC5ED1D5-E089-4C50-B3E9-87B460BC4A3D}
+		{27BF5916-D5D3-416F-83C6-6C6E0B03C12E} = {DC5ED1D5-E089-4C50-B3E9-87B460BC4A3D}
 	EndGlobalSection
 EndGlobal

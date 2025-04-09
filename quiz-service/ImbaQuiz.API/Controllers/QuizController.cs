@@ -12,7 +12,9 @@ namespace ImbaQuiz.API.Controllers
 { 
     [ApiController]
     [Route("api/quizzes")]
-    public class QuizzesController(IQuizService _quizService, ILogSender _logSender) : ControllerBase
+    public class QuizzesController(IQuizService _quizService, 
+        ILogSender _logSender
+        ) : ControllerBase
     {
 
         [HttpGet]

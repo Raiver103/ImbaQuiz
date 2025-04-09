@@ -10,7 +10,9 @@ namespace ImbaQuiz.API.Middleware
         private readonly RequestDelegate _next;
         private readonly ILogSender _logSender;
 
-        public ExceptionMiddleware(RequestDelegate next, ILogSender logSender)
+        public ExceptionMiddleware(RequestDelegate next
+            , ILogSender logSender
+            )
         {
             _next = next;
             _logSender = logSender;
