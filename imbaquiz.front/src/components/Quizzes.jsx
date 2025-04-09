@@ -32,7 +32,7 @@ const Quizzes = () => {
     const token = await getAccessTokenSilently();
     try {
       const res = await axios.post(
-        "https://localhost:7280/api/quizzes",
+        "http://localhost:5000/api/quizzes",
         { title: quizTitle, userId: user.sub },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -48,7 +48,7 @@ const Quizzes = () => {
     const token = await getAccessTokenSilently();
     try {
       await axios.put(
-        `https://localhost:7280/api/quizzes/${editQuizId}`,
+        `http://localhost:5000/api/quizzes/${editQuizId}`,
         { id: editQuizId, title: editQuizTitle, userId: user.sub },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -63,7 +63,7 @@ const Quizzes = () => {
   const handleDeleteQuiz = async (quizId) => {
     const token = await getAccessTokenSilently();
     try {
-      await axios.delete(`https://localhost:7280/api/quizzes/${quizId}`, {
+      await axios.delete(`http://localhost:5000/api/quizzes/${quizId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setQuizzes(quizzes.filter((quiz) => quiz.id !== quizId));

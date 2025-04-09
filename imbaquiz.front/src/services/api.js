@@ -125,6 +125,8 @@ export const getQuizzes = async (getAccessTokenSilently) => {
   const axiosInstance = createAxiosInstance(getAccessTokenSilently);
   try {
     const response = await axiosInstance.get('/quizzes');
+    console.log(response);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     throw error;
@@ -132,6 +134,7 @@ export const getQuizzes = async (getAccessTokenSilently) => {
 };
 
 export const createQuiz = async (title, userId, getAccessTokenSilently) => {
+  console.log()
   const axiosInstance = createAxiosInstance(getAccessTokenSilently);
   try {
     const response = await axiosInstance.post("/quizzes", { title, userId });
