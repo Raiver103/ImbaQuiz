@@ -30,7 +30,7 @@ namespace log_service.API.Services
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
 
-            _channel.QueueDeclare(queue: "logs", durable: true, exclusive: false, autoDelete: false);
+            _channel.QueueDeclare(queue: _rabbitSettings.QueueName, durable: true, exclusive: false, autoDelete: false);
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, ea) =>
