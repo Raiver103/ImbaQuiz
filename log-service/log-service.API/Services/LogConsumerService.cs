@@ -1,4 +1,6 @@
-﻿using RabbitMQ.Client;
+﻿using log_service.API.Configurations;
+using Microsoft.Extensions.Options;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Serilog;
 using System.Text;
@@ -7,17 +9,23 @@ namespace log_service.API.Services
 {
     public class LogConsumerService : BackgroundService
     {
+        private readonly RabbitMqSettings _rabbitSettings;
         private IConnection _connection;
         private IModel _channel;
+
+        public LogConsumerService(IOptions<RabbitMqSettings> rabbitMqOptions)
+        {
+            _rabbitSettings = rabbitMqOptions.Value;
+        }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "rabbitmq",
-                UserName = "guest",
-                Password = "guest"
-            };
+                HostName = _rabbitSettings.HostName,
+                UserName = _rabbitSettings.UserName,
+                Password = _rabbitSettings.Password 
+            }; 
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
@@ -30,9 +38,7 @@ namespace log_service.API.Services
                 var message = Encoding.UTF8.GetString(ea.Body.ToArray());
                 Log.Information("📥 Log received: {Message}", message);
             };
-
-            _channel.BasicConsume(queue: "logs", autoAck: true, consumer: consumer);
-
+  
             return Task.CompletedTask;
         }
 

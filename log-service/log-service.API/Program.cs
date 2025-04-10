@@ -1,8 +1,11 @@
+using log_service.API.Configurations;
 using log_service.API.Services;
 using Serilog;
 using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(new RenderedCompactJsonFormatter())
@@ -11,19 +14,12 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 builder.Host.UseSerilog();
+
+builder.Services.Configure<RabbitMqSettings>(
+    builder.Configuration.GetSection("RabbitMqSettings"));
+
 builder.Services.AddHostedService<LogConsumerService>();
-
-
-builder.Services.AddControllers();
-//builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-
-
+ 
 var app = builder.Build();
-
-//app.UseSwagger();
-//app.UseSwaggerUI();
-
-app.MapControllers();
 
 app.Run();
