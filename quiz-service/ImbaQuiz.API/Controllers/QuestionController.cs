@@ -1,21 +1,15 @@
 ﻿using ImbaQuiz.Application.DTOs;
-using ImbaQuiz.Application.Interfaces;
-using ImbaQuiz.Domain.Entities;
+using ImbaQuiz.Application.Interfaces; 
 using ImbaQuiz.Domain.Exceptions;
 using ImbaQuiz.Domain.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc; 
 
 namespace ImbaQuiz.API.Controllers
 { 
     [ApiController]
     [Route("api/questions")]
-    public class QuestionsController(IQuestionService _questionService, 
-        ILogSender _logSender
-        ) : ControllerBase
+    public class QuestionsController(IQuestionService _questionService, ILogSender _logSender) : ControllerBase
     {
-
         [HttpGet]
         public async Task<OkObjectResult> GetAllQuestions(CancellationToken cancellationToken)
         {

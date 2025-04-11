@@ -1,6 +1,5 @@
 ﻿using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Application.Interfaces;
-using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Exceptions;
 using ImbaQuiz.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc; 
@@ -9,9 +8,7 @@ namespace ImbaQuiz.API.Controllers
 {
     [ApiController]
     [Route("api/users")]
-    public class UsersController(IUserService _userService, 
-        ILogSender _logSender
-        ) : ControllerBase
+    public class UsersController(IUserService _userService, ILogSender _logSender) : ControllerBase
     {
         [HttpGet]
         public async Task<OkObjectResult> GetAllUsers(CancellationToken cancellationToken)
