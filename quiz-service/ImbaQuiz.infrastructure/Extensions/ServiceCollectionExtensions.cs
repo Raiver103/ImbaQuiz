@@ -1,9 +1,6 @@
-﻿using ImbaQuiz.API.Services;
-using ImbaQuiz.Domain.Entities;
+﻿using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Interfaces;
-using ImbaQuiz.infrastructure.Configuration;
 using ImbaQuiz.infrastructure.Repositories;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection; 
 
 namespace ImbaQuiz.infrastructure.Extensions
