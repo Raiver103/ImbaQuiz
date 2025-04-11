@@ -1,9 +1,10 @@
-using Microsoft.OpenApi.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
+using Microsoft.OpenApi.Models; 
 using Microsoft.EntityFrameworkCore;
 using ImbaQuiz.infrastructure.Persistence;
-using ImbaQuiz.Application.Mapping;
+using ImbaQuiz.Application.Mapping; 
+using ImbaQuiz.API.Services;
+using ImbaQuiz.Domain.Interfaces;
+using ImbaQuiz.infrastructure.Configuration;
 
 namespace ImbaQuiz.API.Extensions
 {
@@ -32,6 +33,9 @@ namespace ImbaQuiz.API.Extensions
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+            services.Configure<RabbitMqSettings>(configuration.GetSection(RabbitMqSettings.SectionName));
+            services.AddSingleton<ILogSender, LogSender>();
 
             return services;
         }

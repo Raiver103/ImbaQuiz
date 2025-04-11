@@ -1,12 +1,7 @@
 ﻿using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Interfaces;
 using ImbaQuiz.infrastructure.Repositories;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection; 
 
 namespace ImbaQuiz.infrastructure.Extensions
 {
@@ -25,7 +20,7 @@ namespace ImbaQuiz.infrastructure.Extensions
 
             services.AddScoped<IAnswerRepository, AnswerRepository>();
             services.AddScoped<IRepository<Answer, int>, AnswerRepository>();
-
+  
             return services;
         }
     }
