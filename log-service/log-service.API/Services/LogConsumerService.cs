@@ -38,7 +38,7 @@ namespace log_service.API.Services
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning("❌ Не удалось подключиться к RabbitMQ: {Message}", ex.Message);
+                    Log.Warning("Failed to connect to RabbitMQ: {Message}", ex.Message); 
                     retryCount++;
                     await Task.Delay(5000, stoppingToken);
                 }
@@ -46,7 +46,7 @@ namespace log_service.API.Services
  
             if (_channel == null)
             {
-                Log.Error("🛑 Не удалось установить соединение с RabbitMQ после 10 попыток");
+                Log.Error("Failed to establish connection with RabbitMQ after 10 attempts");
                 return;
             }
  
