@@ -6,10 +6,9 @@ using Serilog.Formatting.Compact;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
+ 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console(new RenderedCompactJsonFormatter())
-    .WriteTo.MongoDB("mongodb://mongo:27017/logs", collectionName: "logEntries")
+    .ReadFrom.Configuration(builder.Configuration)   
     .Enrich.FromLogContext()
     .CreateLogger();
 

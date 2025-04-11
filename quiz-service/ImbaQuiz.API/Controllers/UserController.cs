@@ -39,7 +39,7 @@ namespace ImbaQuiz.API.Controllers
             _logSender.SendLog("Creating a new user");
             var createdUser = await _userService.CreateAsync(userDto, cancellationToken);
             _logSender.SendLog($"Created user with id {createdUser.Id}");
-            return CreatedAtAction("GetUser", new { id = createdUser.Id }, createdUser); // Используем строку "GetUser"
+            return CreatedAtAction("GetUser", new { id = createdUser.Id }, createdUser); 
         }
 
         [HttpPut("{id}")]
