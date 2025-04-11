@@ -1,8 +1,6 @@
-﻿
-using ImbaQuiz.API.Services;
+﻿using ImbaQuiz.API.Services;
 using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Interfaces;
-using ImbaQuiz.infrastructure.Interfaces;
 using ImbaQuiz.infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection; 
 
@@ -23,12 +21,9 @@ namespace ImbaQuiz.infrastructure.Extensions
 
             services.AddScoped<IAnswerRepository, AnswerRepository>();
             services.AddScoped<IRepository<Answer, int>, AnswerRepository>();
-
-
+ 
             services.AddSingleton<ILogSender, LogSender>();
-
-            
-
+ 
             return services;
         }
     }

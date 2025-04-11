@@ -1,8 +1,8 @@
 ﻿using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Application.Interfaces; 
-using ImbaQuiz.Domain.Exceptions;
-using ImbaQuiz.infrastructure.Interfaces;
+using ImbaQuiz.Domain.Exceptions; 
 using Microsoft.AspNetCore.Mvc;
+using ImbaQuiz.Domain.Interfaces;
 
 namespace ImbaQuiz.API.Controllers
 { 

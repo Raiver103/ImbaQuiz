@@ -1,4 +1,4 @@
-﻿using ImbaQuiz.infrastructure.Interfaces;
+﻿using ImbaQuiz.Domain.Interfaces;
 using RabbitMQ.Client;
 using System.Text;
 

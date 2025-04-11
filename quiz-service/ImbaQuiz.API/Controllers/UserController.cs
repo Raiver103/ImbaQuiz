@@ -2,7 +2,7 @@
 using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Exceptions;
-using ImbaQuiz.infrastructure.Interfaces;
+using ImbaQuiz.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc; 
 
 namespace ImbaQuiz.API.Controllers

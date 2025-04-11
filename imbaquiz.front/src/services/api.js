@@ -124,17 +124,14 @@ export const updateQuestion = async (questionId, updatedQuestion, quizId, getAcc
 export const getQuizzes = async (getAccessTokenSilently) => {
   const axiosInstance = createAxiosInstance(getAccessTokenSilently);
   try {
-    const response = await axiosInstance.get('/quizzes');
-    console.log(response);
-    console.log(response.data);
+    const response = await axiosInstance.get('/quizzes'); 
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const createQuiz = async (title, userId, getAccessTokenSilently) => {
-  console.log()
+export const createQuiz = async (title, userId, getAccessTokenSilently) => { 
   const axiosInstance = createAxiosInstance(getAccessTokenSilently);
   try {
     const response = await axiosInstance.post("/quizzes", { title, userId });
