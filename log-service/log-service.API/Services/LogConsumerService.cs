@@ -43,13 +43,13 @@ namespace log_service.API.Services
                     await Task.Delay(5000, stoppingToken);
                 }
             }
-
+ 
             if (_channel == null)
             {
                 Log.Error("🛑 Не удалось установить соединение с RabbitMQ после 10 попыток");
                 return;
             }
-
+ 
             _channel.QueueDeclare(queue: _rabbitSettings.QueueName, durable: true, exclusive: false, autoDelete: false);
 
             var consumer = new EventingBasicConsumer(_channel);
