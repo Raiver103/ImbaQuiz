@@ -18,19 +18,39 @@ namespace log_service.API.Services
             _rabbitSettings = rabbitMqOptions.Value;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var factory = new ConnectionFactory()
             {
                 HostName = _rabbitSettings.HostName,
                 UserName = _rabbitSettings.UserName,
-                Password = _rabbitSettings.Password 
-            }; 
+                Password = _rabbitSettings.Password
+            };
 
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
+            int retryCount = 0;
+            while (!stoppingToken.IsCancellationRequested && retryCount < 10)
+            {
+                try
+                {
+                    _connection = factory.CreateConnection();
+                    _channel = _connection.CreateModel();
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning("❌ Не удалось подключиться к RabbitMQ: {Message}", ex.Message);
+                    retryCount++;
+                    await Task.Delay(5000, stoppingToken);
+                }
+            }
 
-            _channel.QueueDeclare(queue: "logs", durable: true, exclusive: false, autoDelete: false);
+            if (_channel == null)
+            {
+                Log.Error("🛑 Не удалось установить соединение с RabbitMQ после 10 попыток");
+                return;
+            }
+
+            _channel.QueueDeclare(queue: _rabbitSettings.QueueName, durable: true, exclusive: false, autoDelete: false);
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, ea) =>
@@ -38,8 +58,8 @@ namespace log_service.API.Services
                 var message = Encoding.UTF8.GetString(ea.Body.ToArray());
                 Log.Information("📥 Log received: {Message}", message);
             };
-  
-            return Task.CompletedTask;
+
+            _channel.BasicConsume(queue: _rabbitSettings.QueueName, autoAck: true, consumer: consumer);
         }
 
         public override void Dispose()

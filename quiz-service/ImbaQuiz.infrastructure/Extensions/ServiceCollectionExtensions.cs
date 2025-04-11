@@ -4,12 +4,7 @@ using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Interfaces;
 using ImbaQuiz.infrastructure.Interfaces;
 using ImbaQuiz.infrastructure.Repositories;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection; 
 
 namespace ImbaQuiz.infrastructure.Extensions
 {
@@ -31,6 +26,8 @@ namespace ImbaQuiz.infrastructure.Extensions
 
 
             services.AddSingleton<ILogSender, LogSender>();
+
+            
 
             return services;
         }

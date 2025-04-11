@@ -1,10 +1,7 @@
 using ImbaQuiz.API.Extensions;
 using ImbaQuiz.API.Middleware; 
 using ImbaQuiz.infrastructure.Extensions;
-using ImbaQuiz.Application.Extensions;
-using ImbaQuiz.API.Services;
-using ImbaQuiz.infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
+using ImbaQuiz.Application.Extensions; 
 
 var builder = WebApplication.CreateBuilder(args);
  
@@ -18,15 +15,7 @@ var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        if (!dbContext.Database.GetPendingMigrations().Any())
-        {
-            dbContext.Database.Migrate();
-        }
-    }
+    MigrationManager.ApplyMigrations(app.Services);
 }
 
 app.UseMiddleware<ExceptionMiddleware>();

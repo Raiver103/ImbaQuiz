@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import Questions from "./Questions";
-import { getQuizzes } from "../services/api"; 
+import {
+  getQuizzes,
+  createQuiz,
+  updateQuiz,
+  deleteQuiz,
+} from "../services/api";
 
 const Quizzes = () => {
   const { getAccessTokenSilently, user } = useAuth0();
@@ -16,9 +20,9 @@ const Quizzes = () => {
   useEffect(() => {
     const fetchQuizzes = async () => {
       if (!user) return;
-      try { 
-        const allQuizzes = await getQuizzes(getAccessTokenSilently); 
-        const userQuizzes = allQuizzes.filter(quiz => quiz.userId === user.sub);
+      try {
+        const allQuizzes = await getQuizzes(getAccessTokenSilently);
+        const userQuizzes = allQuizzes.filter((quiz) => quiz.userId === user.sub);
         setQuizzes(userQuizzes);
       } catch (error) {
         console.error("Error fetching quizzes:", error);
@@ -29,14 +33,9 @@ const Quizzes = () => {
 
   const handleAddQuiz = async (e) => {
     e.preventDefault();
-    const token = await getAccessTokenSilently();
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/quizzes",
-        { title: quizTitle, userId: user.sub },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setQuizzes([...quizzes, res.data]);
+      const newQuiz = await createQuiz(quizTitle, user.sub, getAccessTokenSilently);
+      setQuizzes([...quizzes, newQuiz]);
       setQuizTitle("");
     } catch (error) {
       console.error("Error adding quiz:", error);
@@ -45,13 +44,8 @@ const Quizzes = () => {
 
   const handleUpdateQuiz = async () => {
     if (!editQuizTitle) return;
-    const token = await getAccessTokenSilently();
     try {
-      await axios.put(
-        `http://localhost:5000/api/quizzes/${editQuizId}`,
-        { id: editQuizId, title: editQuizTitle, userId: user.sub },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await updateQuiz(editQuizId, editQuizTitle, user.sub, getAccessTokenSilently);
       setQuizzes(quizzes.map(q => q.id === editQuizId ? { ...q, title: editQuizTitle } : q));
       setEditQuizId(null);
       setEditQuizTitle("");
@@ -61,11 +55,8 @@ const Quizzes = () => {
   };
 
   const handleDeleteQuiz = async (quizId) => {
-    const token = await getAccessTokenSilently();
     try {
-      await axios.delete(`http://localhost:5000/api/quizzes/${quizId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await deleteQuiz(quizId, getAccessTokenSilently);
       setQuizzes(quizzes.filter((quiz) => quiz.id !== quizId));
       if (selectedQuizId === quizId) {
         setSelectedQuizId(null);
@@ -97,7 +88,10 @@ const Quizzes = () => {
               <>
                 {quiz.title}
                 <button onClick={() => setSelectedQuizId(quiz.id)}>View</button>
-                <button onClick={() => { setEditQuizId(quiz.id); setEditQuizTitle(quiz.title); }}>Edit</button>
+                <button onClick={() => {
+                  setEditQuizId(quiz.id);
+                  setEditQuizTitle(quiz.title);
+                }}>Edit</button>
                 <button onClick={() => handleDeleteQuiz(quiz.id)}>Delete</button>
                 <Link to={`/quiz-game/${quiz.id}`}>
                   <button style={{ marginLeft: "10px" }}>Играть</button>

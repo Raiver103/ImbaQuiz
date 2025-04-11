@@ -59,7 +59,7 @@ services:
     depends_on:
       - rabbitmq
       - mongo
-    restart: always
+    restart: always 
 
   # MongoDB
   mongo:
