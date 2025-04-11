@@ -1,6 +1,5 @@
 ﻿using ImbaQuiz.Application.DTOs;
-using ImbaQuiz.Application.Interfaces;
-using ImbaQuiz.Domain.Entities;
+using ImbaQuiz.Application.Interfaces; 
 using ImbaQuiz.Domain.Exceptions;
 using ImbaQuiz.infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +8,7 @@ namespace ImbaQuiz.API.Controllers
 { 
     [ApiController]
     [Route("api/answers")]
-    public class AnswersController(IAnswerService _answerService, 
-        ILogSender _logSender
-        )
-        : ControllerBase
+    public class AnswersController(IAnswerService _answerService, ILogSender _logSender) : ControllerBase
     { 
         [HttpGet]
         public async Task<OkObjectResult> GetAllAnswers(CancellationToken cancellationToken)

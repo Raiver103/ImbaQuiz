@@ -16,7 +16,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 builder.Services.Configure<RabbitMqSettings>(
-    builder.Configuration.GetSection("RabbitMqSettings"));
+    builder.Configuration.GetSection(RabbitMqSettings.SectionName));
 
 builder.Services.AddHostedService<LogConsumerService>();
  
