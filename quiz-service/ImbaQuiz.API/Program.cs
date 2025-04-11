@@ -17,6 +17,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
 
 app.UseCors("AllowAllOrigins");
 app.MapControllers();
