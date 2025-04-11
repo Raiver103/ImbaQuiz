@@ -4,10 +4,8 @@ using ImbaQuiz.infrastructure.Extensions;
 using ImbaQuiz.Application.Extensions; 
 
 var builder = WebApplication.CreateBuilder(args);
- 
 
-builder.Services.AddApiServices(builder.Configuration);
-
+builder.Services.AddApiServices(builder.Configuration); 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices();
 
