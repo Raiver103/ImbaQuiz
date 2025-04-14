@@ -37,19 +37,21 @@ namespace log_service.API.Services
                     break;
                 }
                 catch (Exception ex)
-                { 
-                    Log.Warning("Failed to connect to RabbitMQ: {Message}", ex.Message); 
+                {
+                                        Log.Warning("Failed to connect to RabbitMQ: {Message}", ex.Message); 
+
                     retryCount++;
                     await Task.Delay(5000, stoppingToken);
                 }
             }
-
+ 
             if (_channel == null)
-            { 
+            {                
                 Log.Error("Failed to establish connection with RabbitMQ after 10 attempts");
+
                 return;
             }
-
+ 
             _channel.QueueDeclare(queue: _rabbitSettings.QueueName, durable: true, exclusive: false, autoDelete: false);
 
             var consumer = new EventingBasicConsumer(_channel);
