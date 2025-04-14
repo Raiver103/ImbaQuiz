@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImbaQuiz.infrastructure.Interfaces
+namespace ImbaQuiz.Domain.Interfaces
 {
     public interface ILogSender
     {

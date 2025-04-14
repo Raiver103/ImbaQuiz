@@ -9,8 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImbaQuiz.infrastructure.Extensions
-{
-
+{ 
     public static class MigrationManager
     {
         public static void ApplyMigrations(IServiceProvider serviceProvider)

@@ -1,5 +1,5 @@
 using ImbaQuiz.Domain.Exceptions;
-using ImbaQuiz.infrastructure.Interfaces;
+using ImbaQuiz.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Text.Json;
