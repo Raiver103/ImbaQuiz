@@ -10,18 +10,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImbaQuiz.infrastructure.Extensions
 { 
-    public static class MigrationManager
-    {
-        public static void ApplyMigrations(IServiceProvider serviceProvider)
-        {
-            using var scope = serviceProvider.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    // public static class MigrationManager
+    // {
+    //     public static void ApplyMigrations(IServiceProvider serviceProvider)
+    //     {
+    //         using var scope = serviceProvider.CreateScope();
+    //         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            if (dbContext.Database.GetPendingMigrations().Any())
-            {
-                dbContext.Database.Migrate();
-            }
-        }
-    }
+    //         if (dbContext.Database.GetPendingMigrations().Any())
+    //         {
+    //             dbContext.Database.Migrate();
+    //         }
+    //     }
+    // }
 }
                                         
