@@ -2,6 +2,7 @@
 using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Domain.Entities;
+using ImbaQuiz.Domain.Exceptions;
 using ImbaQuiz.Domain.Interfaces;
 using System.Collections.Generic;
 using System.Threading;
@@ -21,6 +22,12 @@ namespace ImbaQuiz.Application.Services
         public async Task<QuizDTO> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             var quiz = await _quizRepository.GetByIdAsync(id, cancellationToken);
+            
+            if (quiz is null)
+            {
+                throw new NotFoundException($"Quiz with id {id} not found.");
+            }
+            
             return _mapper.Map<QuizDTO>(quiz);
         }
 
