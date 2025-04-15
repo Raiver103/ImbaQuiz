@@ -20,10 +20,7 @@ namespace ImbaQuiz.API.Controllers
         [HttpGet("{id}")]
         public async Task<OkObjectResult> GetAnswer(int id, CancellationToken cancellationToken)
         { 
-            var answer = await _answerService.GetByIdAsync(id, cancellationToken);
-            if (answer is null) { 
-                throw new NotFoundException($"Answer with id {id} not found.");
-            } 
+            var answer = await _answerService.GetByIdAsync(id, cancellationToken); 
             return Ok(answer);
         }
 

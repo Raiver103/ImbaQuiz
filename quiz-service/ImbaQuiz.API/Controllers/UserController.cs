@@ -20,11 +20,7 @@ namespace ImbaQuiz.API.Controllers
         [HttpGet("{id}")]
         public async Task<OkObjectResult> GetUser(string id, CancellationToken cancellationToken)
         { 
-            var user = await _userService.GetByIdAsync(id, cancellationToken);
-            if (user is null)
-            { 
-                throw new NotFoundException($"User with id {id} not found.");
-            } 
+            var user = await _userService.GetByIdAsync(id, cancellationToken); 
             return Ok(user);
         }
 
@@ -32,7 +28,7 @@ namespace ImbaQuiz.API.Controllers
         public async Task<CreatedAtActionResult> CreateUser([FromBody] UserDTO userDto, CancellationToken cancellationToken)
         { 
             var createdUser = await _userService.CreateAsync(userDto, cancellationToken); 
-            return CreatedAtAction("GetUser", new { id = createdUser.Id }, createdUser); 
+            return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id, cancellationToken = cancellationToken }, createdUser); 
         }
 
         [HttpPut("{id}")]
