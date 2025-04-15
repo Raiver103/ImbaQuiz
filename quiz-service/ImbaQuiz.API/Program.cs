@@ -11,11 +11,6 @@ builder.Services.AddInfrastructureServices();
 
 var app = builder.Build();
 
-// if (!app.Environment.IsDevelopment())
-// {
-//     MigrationManager.ApplyMigrations(app.Services);
-// }
-
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
