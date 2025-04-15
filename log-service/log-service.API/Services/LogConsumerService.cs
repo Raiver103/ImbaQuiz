@@ -38,7 +38,7 @@ namespace log_service.API.Services
                 }
                 catch (Exception ex)
                 {
-                                        Log.Warning("Failed to connect to RabbitMQ: {Message}", ex.Message); 
+                    Log.Warning("Failed to connect to RabbitMQ: {Message}", ex.Message); 
 
                     retryCount++;
                     await Task.Delay(5000, stoppingToken);
@@ -58,7 +58,7 @@ namespace log_service.API.Services
             consumer.Received += (model, ea) =>
             {
                 var message = Encoding.UTF8.GetString(ea.Body.ToArray());
-                Log.Information("📥 Log received: {Message}", message);
+                Log.Information("Log received: {Message}", message);
             };
 
             _channel.BasicConsume(queue: _rabbitSettings.QueueName, autoAck: true, consumer: consumer);
