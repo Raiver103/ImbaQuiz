@@ -17,7 +17,11 @@ app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseCors("AllowAllOrigins");
 app.MapControllers();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwagger(); 
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ImbaQuiz API v1");
+    c.RoutePrefix = string.Empty;  
+});
 
 app.Run();
