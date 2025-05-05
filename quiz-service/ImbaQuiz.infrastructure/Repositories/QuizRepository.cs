@@ -51,5 +51,28 @@ namespace ImbaQuiz.infrastructure.Repositories
                 await _context.SaveChangesAsync(cancellationToken);
             }
         }
+
+        public async Task<PaginatedResult<Quiz>> GetPaginatedAsync(int pageNumber, int pageSize, string? userId, CancellationToken cancellationToken)
+        {
+            var query = _context.Quizzes.AsQueryable();
+ 
+            if (!string.IsNullOrEmpty(userId))
+            {
+                query = query.Where(q => q.UserId == userId);
+            }
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            return new PaginatedResult<Quiz>
+            {
+                Items = items,
+                TotalCount = totalCount
+            };
+        }
     }
 }

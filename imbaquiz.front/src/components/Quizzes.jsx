@@ -2,12 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 import Questions from "./Questions";
-import {
-  getQuizzes,
-  createQuiz,
-  updateQuiz,
-  deleteQuiz,
-} from "../services/api";
+import { getPaginatedQuizzes, createQuiz, updateQuiz, deleteQuiz } from "../services/api";
 
 const Quizzes = () => {
   const { getAccessTokenSilently, user } = useAuth0();
@@ -16,27 +11,41 @@ const Quizzes = () => {
   const [quizTitle, setQuizTitle] = useState("");
   const [editQuizId, setEditQuizId] = useState(null);
   const [editQuizTitle, setEditQuizTitle] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(4);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchPaginatedQuizzes = async () => {
+    if (!user) return;
+    try {
+      const result = await getPaginatedQuizzes(currentPage, pageSize, getAccessTokenSilently, user.sub);
+  
+      const userQuizzes = result.items.filter((quiz) => quiz.userId === user.sub);
+      setQuizzes(userQuizzes);
+  
+      if (!isNaN(result.totalCount)) {
+        const pages = Math.ceil(result.totalCount / pageSize);
+        setTotalPages(pages);
+      } else {
+        console.warn("Invalid totalCount:", result.totalCount);
+        setTotalPages(1);
+      }
+    } catch (error) {
+      console.error("Error fetching paginated quizzes:", error);
+    }
+  };
+  
 
   useEffect(() => {
-    const fetchQuizzes = async () => {
-      if (!user) return;
-      try {
-        const allQuizzes = await getQuizzes(getAccessTokenSilently);
-        const userQuizzes = allQuizzes.filter((quiz) => quiz.userId === user.sub);
-        setQuizzes(userQuizzes);
-      } catch (error) {
-        console.error("Error fetching quizzes:", error);
-      }
-    };
-    fetchQuizzes();
-  }, [getAccessTokenSilently, user]);
+    fetchPaginatedQuizzes();
+  }, [currentPage, pageSize, getAccessTokenSilently, user]);
 
   const handleAddQuiz = async (e) => {
     e.preventDefault();
     try {
       const newQuiz = await createQuiz(quizTitle, user.sub, getAccessTokenSilently);
-      setQuizzes([...quizzes, newQuiz]);
       setQuizTitle("");
+      fetchPaginatedQuizzes();
     } catch (error) {
       console.error("Error adding quiz:", error);
     }
@@ -46,7 +55,7 @@ const Quizzes = () => {
     if (!editQuizTitle) return;
     try {
       await updateQuiz(editQuizId, editQuizTitle, user.sub, getAccessTokenSilently);
-      setQuizzes(quizzes.map(q => q.id === editQuizId ? { ...q, title: editQuizTitle } : q));
+      fetchPaginatedQuizzes();
       setEditQuizId(null);
       setEditQuizTitle("");
     } catch (error) {
@@ -57,7 +66,7 @@ const Quizzes = () => {
   const handleDeleteQuiz = async (quizId) => {
     try {
       await deleteQuiz(quizId, getAccessTokenSilently);
-      setQuizzes(quizzes.filter((quiz) => quiz.id !== quizId));
+      fetchPaginatedQuizzes();
       if (selectedQuizId === quizId) {
         setSelectedQuizId(null);
       }
@@ -114,6 +123,44 @@ const Quizzes = () => {
       </form>
 
       {selectedQuizId && <Questions quizId={selectedQuizId} />}
+
+      {/* Pagination controls */}
+      <div style={{ marginTop: '20px' }}>
+        <label>
+          Кол-во на странице: 
+          <select
+            value={pageSize}
+            onChange={(e) => {
+              setCurrentPage(1); // сбрасываем на первую
+              setPageSize(Number(e.target.value));
+            }}
+          >
+            <option value={2}>2</option>
+            <option value={4}>4</option>
+            <option value={10}>10</option>
+          </select>
+        </label>
+
+        <div>
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Назад
+          </button>
+
+          <span style={{ margin: '0 10px' }}>
+            Страница {currentPage} из {totalPages}
+          </span>
+
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Вперёд
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

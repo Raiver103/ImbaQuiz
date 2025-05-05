@@ -191,3 +191,14 @@
       throw error;
     }
   };
+
+  export const getPaginatedQuizzes = async (pageNumber, pageSize, getAccessTokenSilently, userId) => {
+    const axiosInstance = createAxiosInstance(getAccessTokenSilently);
+    try {
+      const response = await axiosInstance.get(`/quizzes/paginated?pageNumber=${pageNumber}&pageSize=${pageSize}&userId=${userId}`);
+      console.log(response.data.pageNumber);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };

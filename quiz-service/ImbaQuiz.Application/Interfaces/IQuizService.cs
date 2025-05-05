@@ -15,5 +15,6 @@ namespace ImbaQuiz.Application.Interfaces
         Task<QuizDTO> CreateAsync(QuizDTO quizDto, CancellationToken cancellationToken);
         Task<QuizDTO> UpdateAsync(int id, QuizDTO quizDto, CancellationToken cancellationToken);
         Task DeleteAsync(int id, CancellationToken cancellationToken);
+        Task<PaginatedResult<QuizDTO>> GetPaginatedAsync(int pageNumber, int pageSize, string? userId, CancellationToken cancellationToken);
     }
 }
