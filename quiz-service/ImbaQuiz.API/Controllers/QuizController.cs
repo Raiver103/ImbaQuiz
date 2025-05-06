@@ -8,7 +8,7 @@ namespace ImbaQuiz.API.Controllers
 {
     [ApiController]
     [Route("api/quizzes")]
-    public class QuizzesController(IQuizService _quizService, ILogSender _logSender) : ControllerBase
+    public class QuizzesController(IQuizService _quizService) : ControllerBase
     {
         /// <summary>
         /// Получить все викторины.
@@ -71,6 +71,25 @@ namespace ImbaQuiz.API.Controllers
         {
             await _quizService.DeleteAsync(id, cancellationToken);
             return NoContent();
+        }
+
+        /// <summary>
+        /// Gets a paginated list of quizzes for a specific user.
+        /// </summary>
+        /// <param name="pageNumber">The page number to retrieve.</param>
+        /// <param name="pageSize">The number of quizzes per page.</param>
+        /// <param name="userId">The user ID to filter the quizzes by (optional).</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A paginated result containing quizzes.</returns>
+        [HttpGet("paginated")]
+        public async Task<IActionResult> GetPaginated(
+            [FromQuery] int pageNumber,
+            [FromQuery] int pageSize,
+            [FromQuery] string? userId,
+            CancellationToken cancellationToken)
+        {
+            var result = await _quizService.GetPaginatedAsync(pageNumber, pageSize, userId, cancellationToken);
+            return Ok(result);
         }
     }
 }

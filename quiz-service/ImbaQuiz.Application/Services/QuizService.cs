@@ -57,5 +57,16 @@ namespace ImbaQuiz.Application.Services
         {
             await _quizRepository.DeleteAsync(id, cancellationToken);
         }
+
+        public async Task<PaginatedResult<QuizDTO>> GetPaginatedAsync(int pageNumber, int pageSize, string? userId, CancellationToken cancellationToken)
+        {
+            var result = await _quizRepository.GetPaginatedAsync(pageNumber, pageSize, userId, cancellationToken);
+
+            return new PaginatedResult<QuizDTO>
+            {
+                Items = _mapper.Map<IEnumerable<QuizDTO>>(result.Items),
+                TotalCount = result.TotalCount
+            };
+        }
     }
 }
