@@ -2,6 +2,7 @@ using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
+using ImbaQuiz.Application.Validators;
 
 namespace ImbaQuiz.Application.Extensions
 {

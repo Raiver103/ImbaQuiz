@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using ImbaQuiz.Application.Common;
 using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Domain.Entities;

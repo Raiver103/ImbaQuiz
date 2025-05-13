@@ -1,4 +1,5 @@
-﻿using ImbaQuiz.Application.DTOs;
+﻿using ImbaQuiz.Application.Common;
+using ImbaQuiz.Application.DTOs;
 
 namespace ImbaQuiz.Application.Interfaces
 {

@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using AutoMapper;
+using FluentValidation;
 using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Application.Mapping;
 using ImbaQuiz.Application.Services;
@@ -16,10 +17,12 @@ namespace ImbaQuiz.Tests.UnitTests.Services
         private readonly IMapper _mapper;
         private readonly AnswerService _answerService;
         private readonly Fixture _fixture;
-
+        private readonly Mock<IValidator<AnswerDTO>> _validatorMock;    
         public AnswerServiceTests()
         {
             _answerRepositoryMock = new Mock<IAnswerRepository>();
+            _validatorMock = new Mock<IValidator<AnswerDTO>>();
+
             _fixture = new Fixture();
 
             var config = new MapperConfiguration(cfg =>
@@ -28,7 +31,7 @@ namespace ImbaQuiz.Tests.UnitTests.Services
             });
 
             _mapper = config.CreateMapper();
-            _answerService = new AnswerService(_answerRepositoryMock.Object, _mapper);
+            _answerService = new AnswerService(_answerRepositoryMock.Object, _mapper, _validatorMock.Object);
              
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
