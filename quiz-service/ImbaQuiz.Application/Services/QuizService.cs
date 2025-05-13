@@ -5,9 +5,6 @@ using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Exceptions;
 using ImbaQuiz.Domain.Interfaces;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ImbaQuiz.Application.Services
 {

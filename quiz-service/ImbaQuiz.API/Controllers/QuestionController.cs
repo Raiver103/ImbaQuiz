@@ -8,7 +8,7 @@ namespace ImbaQuiz.API.Controllers
 {
     [ApiController]
     [Route("api/questions")]
-    public class QuestionsController(IQuestionService _questionService, ILogSender _logSender) : ControllerBase
+    public class QuestionsController(IQuestionService _questionService) : ControllerBase
     {
         /// <summary>
         /// Получить все вопросы.

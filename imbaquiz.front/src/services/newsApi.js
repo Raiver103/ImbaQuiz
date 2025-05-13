@@ -1,5 +1,3 @@
-// services/newsApi.js
-
 import axios from "axios";
 
 const newsApiUrl = import.meta.env.VITE_NEWS_API_URL || "http://localhost:5100/api"; 

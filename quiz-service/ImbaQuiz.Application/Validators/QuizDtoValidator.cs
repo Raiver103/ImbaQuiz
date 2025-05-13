@@ -2,15 +2,18 @@ using FluentValidation;
 using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Domain.Interfaces;
 
-public class QuizDtoValidator : AbstractValidator<QuizDTO>
+namespace ImbaQuiz.Application.Validators
 {
-    public QuizDtoValidator(IQuizRepository quizRepository)
+    public class QuizDtoValidator : AbstractValidator<QuizDTO>
     {
-        RuleFor(x => x.Title)
-            .NotEmpty().WithMessage("Название квиза обязательно")
-            .MaximumLength(300);
+        public QuizDtoValidator(IQuizRepository quizRepository)
+        {
+            RuleFor(x => x.Title)
+                .NotEmpty().WithMessage("Название квиза обязательно")
+                .MaximumLength(300);
 
-        RuleFor(x => x.UserId)
-            .NotEmpty().WithMessage("UserId обязателен");
+            RuleFor(x => x.UserId)
+                .NotEmpty().WithMessage("UserId обязателен");
+        }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace news_service.API.Models
+﻿namespace news_service.API.Models
 {
     public class NewsRequest
     {

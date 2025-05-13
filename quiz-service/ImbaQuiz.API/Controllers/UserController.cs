@@ -8,7 +8,7 @@ namespace ImbaQuiz.API.Controllers
 {
     [ApiController]
     [Route("api/users")]
-    public class UsersController(IUserService _userService, ILogSender _logSender) : ControllerBase
+    public class UsersController(IUserService _userService) : ControllerBase
     {
         /// <summary>
         /// Получить список всех пользователей.

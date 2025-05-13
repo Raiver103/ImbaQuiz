@@ -1,6 +1,3 @@
-using Microsoft.OpenApi.Models; 
-using Microsoft.EntityFrameworkCore; 
-using System.Reflection;
 using news_service.API.Interfaces;
 using news_service.API.Repositories;
 using StackExchange.Redis;

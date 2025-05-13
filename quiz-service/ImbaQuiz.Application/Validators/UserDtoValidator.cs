@@ -1,16 +1,19 @@
 using FluentValidation;
 using ImbaQuiz.Application.DTOs;
 
-public class UserDtoValidator : AbstractValidator<UserDTO>
+namespace ImbaQuiz.Application.Validators
 {
-    public UserDtoValidator()
+    public class UserDtoValidator : AbstractValidator<UserDTO>
     {
-        RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Имя обязательно")
-            .MaximumLength(300);
+        public UserDtoValidator()
+        {
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage("Имя обязательно")
+                .MaximumLength(300);
 
-        RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Email обязателен")
-            .EmailAddress().WithMessage("Некорректный формат email");
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Email обязателен")
+                .EmailAddress().WithMessage("Некорректный формат email");
+        }
     }
 }

@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace ImbaQuiz.Domain.Interfaces
 {
     public interface IRepository<T, TKey> where T : class

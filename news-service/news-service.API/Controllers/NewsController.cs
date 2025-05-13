@@ -1,5 +1,4 @@
-﻿// Controllers/NewsController.cs
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using news_service.API.Interfaces;
 using news_service.API.Models;
 

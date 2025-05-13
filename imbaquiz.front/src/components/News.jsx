@@ -1,15 +1,14 @@
-// components/News.js
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect } from 'react';
-import { getNews } from '../services/newsApi'; // Импортируем из нового API
+import { getNews } from '../services/newsApi'; 
 
 const News = () => {
-  const { getAccessTokenSilently } = useAuth0(); // вот тут
+  const { getAccessTokenSilently } = useAuth0(); 
   const [news, setNews] = useState([]);
 
   const fetchNews = async () => {
     try {
-      const newsData = await getNews(getAccessTokenSilently); // и сюда
+      const newsData = await getNews(getAccessTokenSilently);
       setNews(newsData);
     } catch (error) {
       console.error("Error fetching news:", error);

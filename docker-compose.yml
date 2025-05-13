@@ -1,12 +1,11 @@
 
 services:
-  # Ваш quiz-service
   quiz-service:
     build:
       context: .  
       dockerfile: quiz-service/Dockerfile
     ports:
-      - "5000:80"   # Прокси порта API (можно изменить на другой)
+      - "5000:80"  
     depends_on:
       - db
       - rabbitmq
@@ -23,7 +22,6 @@ services:
         dotnet ef database update --no-build &&
         dotnet user_activity_service.API.dll"
 
-  # База данных SQL Server
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
@@ -52,7 +50,6 @@ services:
       - imbaquiz-net
     restart: always
    
-  # Лог-сервис
   log-service:
     build:
       context: ./log-service
@@ -66,7 +63,6 @@ services:
       - mongo
     restart: always 
 
-  # MongoDB
   mongo:
     image: mongo
     ports:
@@ -78,8 +74,8 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - "5672:5672"     # Порт для общения между сервисами
-      - "15672:15672"   # Веб-интерфейс RabbitMQ
+      - "5672:5672"     
+      - "15672:15672"  
     networks:
       - imbaquiz-net
     restart: always
@@ -94,7 +90,7 @@ services:
       - redis
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80  # Явно указываем порт 80 
+      - ASPNETCORE_URLS=http://+:80 
       - Redis__ConnectionString=redis:6379
     networks:
       - imbaquiz-net
@@ -108,11 +104,9 @@ services:
       - imbaquiz-net   
     restart: always  
 
-# Настройки сети
 networks:
   imbaquiz-net:
     driver: bridge
 
-# Монтируем том для сохранения данных SQL Server и PostgreSQL
 volumes:
   mssql_data: 

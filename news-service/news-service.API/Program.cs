@@ -1,6 +1,3 @@
-using news_service.API.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using StackExchange.Redis;
 using ImbaQuiz.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);

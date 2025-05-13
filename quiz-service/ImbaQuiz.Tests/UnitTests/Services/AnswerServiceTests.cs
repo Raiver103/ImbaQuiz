@@ -6,11 +6,7 @@ using ImbaQuiz.Application.Services;
 using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Interfaces;
 using Moq;
-using Shouldly;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
+using Shouldly; 
 
 namespace ImbaQuiz.Tests.UnitTests.Services
 {
