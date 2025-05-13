@@ -10,6 +10,8 @@ const Questions = lazy(() => import("./components/Questions"));
 const Quizzes = lazy(() => import("./components/Quizzes"));
 const QuizGame = lazy(() => import("./components/QuizGame"));
 const Home = lazy(() => import("./pages/Home"));
+const News = lazy(() => import("./components/News"));
+const AddNews = lazy(() => import("./components/AddNews"));
 
 function App() {
   const { loginWithRedirect, logout, user, isAuthenticated, isLoading } = useAuth0();
@@ -66,6 +68,8 @@ function App() {
             <Route path="/quiz-game/:quizId" element={isAuthenticated ? <QuizGame /> : <Home />} />
             <Route path="/questions/:quizId" element={isAuthenticated ? <Questions /> : <Home />} />
             <Route path="/answers/:questionId" element={isAuthenticated ? <Answers /> : <Home />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/AddNews" element={ <AddNews/>}  />
           </Routes>
         </MainLayout>
       </Suspense>
