@@ -1,6 +1,8 @@
-// ImbaQuiz.Application/DTOs/PaginationQuery.cs
-public class PaginationQuery
+namespace ImbaQuiz.Application.DTOs
 {
-    public int PageNumber { get; set; } = 1;
-    public int PageSize { get; set; } = 10;
+    public class PaginationQuery
+    {
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+    }
 }

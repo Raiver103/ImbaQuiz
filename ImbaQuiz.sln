@@ -31,6 +31,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "chat-service", "chat-servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "log-service.API", "log-service\log-service.API\log-service.API.csproj", "{27BF5916-D5D3-416F-83C6-6C6E0B03C12E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "news-service", "news-service", "{A36E517B-86E9-4E69-B38D-8BFD74E1512C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "news-service.API", "news-service\news-service.API\news-service.API.csproj", "{FC5B417D-CF46-49C9-BD93-0839FA6C2047}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +65,10 @@ Global
 		{27BF5916-D5D3-416F-83C6-6C6E0B03C12E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27BF5916-D5D3-416F-83C6-6C6E0B03C12E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27BF5916-D5D3-416F-83C6-6C6E0B03C12E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC5B417D-CF46-49C9-BD93-0839FA6C2047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC5B417D-CF46-49C9-BD93-0839FA6C2047}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC5B417D-CF46-49C9-BD93-0839FA6C2047}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC5B417D-CF46-49C9-BD93-0839FA6C2047}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,5 +85,6 @@ Global
 		{C8F481AC-69E3-456C-980D-D4447CCB473D} = {69830564-6D30-4F9B-9E58-A0D643B9639B}
 		{601894F0-72EA-46F6-AC8E-B65C0A908BF7} = {27492E9B-D2AC-4D97-969B-27877B23CC03}
 		{27BF5916-D5D3-416F-83C6-6C6E0B03C12E} = {DC5ED1D5-E089-4C50-B3E9-87B460BC4A3D}
+		{FC5B417D-CF46-49C9-BD93-0839FA6C2047} = {A36E517B-86E9-4E69-B38D-8BFD74E1512C}
 	EndGlobalSection
 EndGlobal

@@ -1,11 +1,8 @@
-﻿using ImbaQuiz.Domain.Entities;
+﻿using ImbaQuiz.Application.Common;
+using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Interfaces;
 using ImbaQuiz.infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ImbaQuiz.infrastructure.Repositories
 { 
@@ -73,6 +70,6 @@ namespace ImbaQuiz.infrastructure.Repositories
                 Items = items,
                 TotalCount = totalCount
             };
-        }
+        } 
     }
 }

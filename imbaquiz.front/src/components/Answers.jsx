@@ -1,4 +1,3 @@
-// Answers.jsx
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { getAnswersByQuestion, createAnswer, deleteAnswer, updateAnswer } from "../services/api";   

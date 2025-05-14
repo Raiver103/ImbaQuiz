@@ -1,10 +1,7 @@
 ﻿using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Interfaces;
 using ImbaQuiz.infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore; 
 
 namespace ImbaQuiz.infrastructure.Repositories
 { 

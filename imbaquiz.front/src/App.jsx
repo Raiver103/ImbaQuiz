@@ -10,6 +10,8 @@ const Questions = lazy(() => import("./components/Questions"));
 const Quizzes = lazy(() => import("./components/Quizzes"));
 const QuizGame = lazy(() => import("./components/QuizGame"));
 const Home = lazy(() => import("./pages/Home"));
+const News = lazy(() => import("./components/News"));
+const AddNews = lazy(() => import("./components/AddNews"));
 
 function App() {
   const { loginWithRedirect, logout, user, isAuthenticated, isLoading } = useAuth0();
@@ -39,12 +41,12 @@ function App() {
   }, [user, isAuthenticated]);
 
   if (isLoading) {
-    return <div>Загрузка...</div>;
+    return <div>Loading...</div>;
   }
 
   return (
     <Router>
-      <Suspense fallback={<div>Загрузка...</div>}>
+      <Suspense fallback={<div>Loading...</div>}>
         <MainLayout>
           { !isAuthenticated ? (
             <div>
@@ -52,10 +54,10 @@ function App() {
             </div>
           ) : (
             <div>
-              <h2>Привет, {user?.name}</h2>
+              <h2>Hello, {user?.name}</h2>
               <p>Email: {user?.email}</p>
               <button onClick={() => logout({ returnTo: window.location.origin })}>
-                Выйти
+                Log out
               </button>
             </div>
           )}
@@ -66,6 +68,8 @@ function App() {
             <Route path="/quiz-game/:quizId" element={isAuthenticated ? <QuizGame /> : <Home />} />
             <Route path="/questions/:quizId" element={isAuthenticated ? <Questions /> : <Home />} />
             <Route path="/answers/:questionId" element={isAuthenticated ? <Answers /> : <Home />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/AddNews" element={ <AddNews/>}  />
           </Routes>
         </MainLayout>
       </Suspense>

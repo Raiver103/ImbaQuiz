@@ -1,15 +1,18 @@
 using FluentValidation;
 using ImbaQuiz.Application.DTOs;
 
-public class AnswerDtoValidator : AbstractValidator<AnswerDTO>
+namespace ImbaQuiz.Application.Validators
 {
-    public AnswerDtoValidator()
+    public class AnswerDtoValidator : AbstractValidator<AnswerDTO>
     {
-        RuleFor(x => x.Text)
-            .NotEmpty().WithMessage("Ответ не может быть пустым")
-            .MaximumLength(300);
+        public AnswerDtoValidator()
+        {
+            RuleFor(x => x.Text)
+                .NotEmpty().WithMessage("Ответ не может быть пустым")
+                .MaximumLength(300);
 
-        RuleFor(x => x.QuestionId)
-            .GreaterThan(0).WithMessage("Некорректный ID вопроса");
+            RuleFor(x => x.QuestionId)
+                .GreaterThan(0).WithMessage("Некорректный ID вопроса");
+        }
     }
 }

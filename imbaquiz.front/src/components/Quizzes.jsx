@@ -124,14 +124,13 @@ const Quizzes = () => {
 
       {selectedQuizId && <Questions quizId={selectedQuizId} />}
 
-      {/* Pagination controls */}
       <div style={{ marginTop: '20px' }}>
         <label>
-          Кол-во на странице: 
+          Count of pages: 
           <select
             value={pageSize}
             onChange={(e) => {
-              setCurrentPage(1); // сбрасываем на первую
+              setCurrentPage(1);
               setPageSize(Number(e.target.value));
             }}
           >
@@ -146,18 +145,18 @@ const Quizzes = () => {
             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
           >
-            Назад
+            Back
           </button>
 
           <span style={{ margin: '0 10px' }}>
-            Страница {currentPage} из {totalPages}
+            Page {currentPage}/{totalPages}
           </span>
 
           <button
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
           >
-            Вперёд
+            Next
           </button>
         </div>
       </div>
