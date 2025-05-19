@@ -19,7 +19,6 @@ namespace ImbaQuiz.infrastructure.Extensions
 
             services.AddScoped<IAnswerRepository, AnswerRepository>();
             services.AddScoped<IAnswerRepository, AnswerRepository>();
-  
             return services;
         }
     }
