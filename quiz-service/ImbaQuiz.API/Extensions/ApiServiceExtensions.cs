@@ -6,6 +6,7 @@ using ImbaQuiz.API.Services;
 using ImbaQuiz.Domain.Interfaces;
 using ImbaQuiz.infrastructure.Configuration;
 using System.Reflection;
+using ImbaQuiz.infrastructure.Interceptors;
 
 namespace ImbaQuiz.API.Extensions
 {
@@ -36,9 +37,14 @@ namespace ImbaQuiz.API.Extensions
                 c.IncludeXmlComments(xmlPath);
             });
 
+            services.AddScoped<AuditInterceptor>();
 
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AppDbContext>((serviceProvider, options) =>
+            {
+                var interceptor = serviceProvider.GetRequiredService<AuditInterceptor>();
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                    .AddInterceptors(interceptor);
+            });
 
             services.Configure<RabbitMqSettings>(configuration.GetSection(RabbitMqSettings.SectionName));
             services.AddSingleton<ILogSender, LogSender>();
