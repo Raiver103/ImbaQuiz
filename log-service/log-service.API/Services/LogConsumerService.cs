@@ -10,12 +10,14 @@ namespace log_service.API.Services
     public class LogConsumerService : BackgroundService
     {
         private readonly RabbitMqSettings _rabbitSettings;
+        private readonly ILogger<LogConsumerService> _logger;
         private IConnection _connection;
         private IModel _channel;
 
-        public LogConsumerService(IOptions<RabbitMqSettings> rabbitMqOptions)
+        public LogConsumerService(IOptions<RabbitMqSettings> rabbitMqOptions, ILogger<LogConsumerService> logger)
         {
             _rabbitSettings = rabbitMqOptions.Value;
+            _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -38,7 +40,7 @@ namespace log_service.API.Services
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning("Failed to connect to RabbitMQ: {Message}", ex.Message); 
+                    _logger.LogWarning("Failed to connect to RabbitMQ: {Message}", ex.Message);
 
                     retryCount++;
                     await Task.Delay(5000, stoppingToken);
@@ -47,7 +49,7 @@ namespace log_service.API.Services
  
             if (_channel == null)
             {                
-                Log.Error("Failed to establish connection with RabbitMQ after 10 attempts");
+                _logger.LogError("Failed to establish connection with RabbitMQ after 10 attempts");
 
                 return;
             }
@@ -58,7 +60,7 @@ namespace log_service.API.Services
             consumer.Received += (model, ea) =>
             {
                 var message = Encoding.UTF8.GetString(ea.Body.ToArray());
-                Log.Information("Log received: {Message}", message);
+                _logger.LogInformation("Log received: {Message}", message);
             };
 
             _channel.BasicConsume(queue: _rabbitSettings.QueueName, autoAck: true, consumer: consumer);

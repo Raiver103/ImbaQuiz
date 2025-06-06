@@ -5,6 +5,8 @@ using ImbaQuiz.Application.Mapping;
 using ImbaQuiz.API.Services;
 using ImbaQuiz.Domain.Interfaces;
 using ImbaQuiz.infrastructure.Configuration;
+using System.Reflection;
+using ImbaQuiz.infrastructure.Interceptors;
 
 namespace ImbaQuiz.API.Extensions
 {
@@ -29,10 +31,20 @@ namespace ImbaQuiz.API.Extensions
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ImbaQuiz API", Version = "v1" });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<AuditInterceptor>();
+
+            services.AddDbContext<AppDbContext>((serviceProvider, options) =>
+            {
+                var interceptor = serviceProvider.GetRequiredService<AuditInterceptor>();
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                    .AddInterceptors(interceptor);
+            });
 
             services.Configure<RabbitMqSettings>(configuration.GetSection(RabbitMqSettings.SectionName));
             services.AddSingleton<ILogSender, LogSender>();

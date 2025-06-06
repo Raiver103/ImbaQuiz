@@ -10,6 +10,8 @@ const MainLayout = ({ children }) => {
           <nav className="main-nav">
             <Link to="/" className="nav-link">Main</Link>
             <Link to="/quizzes" className="nav-link">Quizzes</Link>
+            <Link to="/news" className="nav-link">News</Link>
+            <Link to="/AddNews" className="nav-link">AddNews</Link>
           </nav>
         </div>
       </header>

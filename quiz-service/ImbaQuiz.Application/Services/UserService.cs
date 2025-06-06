@@ -1,18 +1,18 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Exceptions;
 using ImbaQuiz.Domain.Interfaces;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ImbaQuiz.Application.Services
 {
-    public class UserService(IUserRepository _userRepository, IMapper _mapper) : IUserService
-    {  
-
+    public class UserService(
+        IUserRepository _userRepository,
+        IMapper _mapper,
+        IValidator<UserDTO> _validator) : IUserService
+    {
         public async Task<IEnumerable<UserDTO>> GetAllAsync(CancellationToken cancellationToken)
         {
             var users = await _userRepository.GetAllAsync(cancellationToken);
@@ -24,13 +24,15 @@ namespace ImbaQuiz.Application.Services
             var user = await _userRepository.GetByIdAsync(id, cancellationToken);
             if (user is null)
             {
-                throw new NotFoundException($"Quiz with id {id} not found.");
+                throw new NotFoundException($"User with id {id} not found.");
             }
             return _mapper.Map<UserDTO>(user);
         }
 
         public async Task<UserDTO> CreateAsync(UserDTO userDto, CancellationToken cancellationToken)
         {
+            await _validator.ValidateAndThrowAsync(userDto, cancellationToken);
+
             var user = _mapper.Map<User>(userDto);
             var createdUser = await _userRepository.CreateAsync(user, cancellationToken);
             return _mapper.Map<UserDTO>(createdUser);
@@ -38,8 +40,10 @@ namespace ImbaQuiz.Application.Services
 
         public async Task<UserDTO> UpdateAsync(string id, UserDTO userDto, CancellationToken cancellationToken)
         {
+            await _validator.ValidateAndThrowAsync(userDto, cancellationToken);
+
             var user = _mapper.Map<User>(userDto);
-            user.Id = id; 
+            user.Id = id;
             var updatedUser = await _userRepository.UpdateAsync(user, cancellationToken);
             return _mapper.Map<UserDTO>(updatedUser);
         }
@@ -48,5 +52,5 @@ namespace ImbaQuiz.Application.Services
         {
             await _userRepository.DeleteAsync(id, cancellationToken);
         }
-    } 
+    }
 }

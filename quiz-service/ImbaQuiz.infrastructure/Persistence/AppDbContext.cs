@@ -1,24 +1,23 @@
 ﻿using ImbaQuiz.Domain.Entities;
+using ImbaQuiz.infrastructure.Interceptors;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImbaQuiz.infrastructure.Persistence
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { 
+        private readonly AuditInterceptor _auditInterceptor;
+        public AppDbContext(DbContextOptions<AppDbContext> options, AuditInterceptor auditInterceptor) : base(options)
+        {
+
+            _auditInterceptor = auditInterceptor;
             try
             {
-                Database.Migrate(); 
+                Database.Migrate();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка миграции: {ex.Message}");
+                Console.WriteLine($"Migrate Error: {ex.Message}");
             }
         }
 
@@ -45,6 +44,11 @@ namespace ImbaQuiz.infrastructure.Persistence
                 .HasMany(qt => qt.Answers)
                 .WithOne(a => a.Question)
                 .HasForeignKey(a => a.QuestionId);
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder); 
         }
     }
 }

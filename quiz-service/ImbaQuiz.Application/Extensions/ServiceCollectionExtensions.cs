@@ -1,6 +1,8 @@
 using ImbaQuiz.Application.Interfaces;
 using ImbaQuiz.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
+using ImbaQuiz.Application.Validators;
 
 namespace ImbaQuiz.Application.Extensions
 {
@@ -12,6 +14,11 @@ namespace ImbaQuiz.Application.Extensions
             services.AddScoped<IQuizService, QuizService>();
             services.AddScoped<IQuestionService, QuestionService>();
             services.AddScoped<IAnswerService, AnswerService>();
+
+            services.AddValidatorsFromAssemblyContaining<AnswerDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<QuestionDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<QuizDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<UserDtoValidator>();
 
             return services;
         }

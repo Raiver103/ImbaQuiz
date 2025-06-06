@@ -1,17 +1,13 @@
 ﻿using AutoFixture;
 using AutoMapper;
+using FluentValidation;
 using ImbaQuiz.Application.DTOs;
 using ImbaQuiz.Application.Mapping;
 using ImbaQuiz.Application.Services;
 using ImbaQuiz.Domain.Entities;
 using ImbaQuiz.Domain.Interfaces;
 using Moq;
-using Shouldly;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
+using Shouldly; 
 
 namespace ImbaQuiz.Tests.UnitTests.Services
 {
@@ -21,10 +17,12 @@ namespace ImbaQuiz.Tests.UnitTests.Services
         private readonly IMapper _mapper;
         private readonly UserService _userService;
         private readonly Fixture _fixture;
+        private readonly Mock<IValidator<UserDTO>> _validatorMock;    
 
         public UserServiceTests()
         { 
             _fixture = new Fixture();
+            _validatorMock = new Mock<IValidator<UserDTO>>();
              
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
              
@@ -36,7 +34,7 @@ namespace ImbaQuiz.Tests.UnitTests.Services
             });
             _mapper = config.CreateMapper();
              
-            _userService = new UserService(_userRepositoryMock.Object, _mapper);
+            _userService = new UserService(_userRepositoryMock.Object, _mapper, _validatorMock.Object);
         }
 
         [Fact]
