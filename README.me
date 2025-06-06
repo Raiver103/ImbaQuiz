@@ -1,0 +1,41 @@
+<h1 align="center">ImbaQuiz</h1>
+
+# Architecture
+* Microservices, Clean Architecture
+* Services instead Use cases
+
+# Technical tools 
+* Backend: ASP.NET Web API
+* Frontend: React(Vite)
+* Databases: MS SQL Server, MongoDb, Redis
+* Message Broker: RabbitMQ
+* Testing: Unit tests(XUnit, Shouldly, AutoFixture)
+* Infrastructure: Docker
+* Logging: Serilog
+* Validation: FluentValidation
+
+# Advantages  
+* Authentication and authorization via Auth0
+* Pagination
+* Logging Service
+* Exeption middleware
+* Swagger annotation
+* AuditInteraptor(EF Core) 
+
+# Running the solution
+1️⃣ Clone Repository:  
+* git clone https://github.com/Raiver103/InventoryManagement.git
+* cd InventoryManagement
+
+2️⃣ Start Docker-containers: 
+* docker-compose up --build -d
+* (Migration of database setup automatically)
+  
+3️⃣ Checking:
+* Open - http://localhost:3000/ - frontend 
+* Open - http://localhost:5000/ - quiz-service
+* Open - http://localhost:5000/swagger - swagger annotation of quiz-service 
+* Open - http://localhost:5672/ - rabbitmq 
+
+4️⃣ Stop Docker-containers: 
+* docker-compose down
